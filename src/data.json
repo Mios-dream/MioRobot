@@ -1,0 +1,30 @@
+{
+    "self_id": 2907279640,
+    "user_id": 2814721302,
+    "time": 1713943693,
+    "message_id": -2147479554,
+    "real_id": -2147479554,
+    "message_type": "group",
+    "sender": {
+        "user_id": 2814721302,
+        "nickname": "三三sama",
+        "card": "三三老婆",
+        "role": "admin"
+    },
+    "raw_message": "[CQ:image,file=E2055D75511FCF84F8612075B447A3B4.jpg,url=https: //gchat.qpic.cn/download?appid=1407&amp;fileid=CgoyODE0NzIxMzAyEhTL0s7EeUgdMza4BQcFPzvdAjsgAhjG8QIg_woo273e56nahQNQgL2jAQ&amp;rkey=CAQSKAB6JWENi5LMk0kc62l8Pm3Jn1dsLZHyRLAnNmHGoZ3y_gDZPqZt-64&amp;spec=0,file_size=47302]",
+    "font": 14,
+    "sub_type": "normal",
+    "message": [
+        {
+            "data": {
+                "file": "E2055D75511FCF84F8612075B447A3B4.jpg",
+                "url": "https://gchat.qpic.cn/download?appid=1407&fileid=CgoyODE0NzIxMzAyEhTL0s7EeUgdMza4BQcFPzvdAjsgAhjG8QIg_woo273e56nahQNQgL2jAQ&rkey=CAQSKAB6JWENi5LMk0kc62l8Pm3Jn1dsLZHyRLAnNmHGoZ3y_gDZPqZt-64&spec=0",
+                "file_size": "47302"
+            },
+            "type": "image"
+        }
+    ],
+    "message_format": "array",
+    "post_type": "message",
+    "group_id": 676832751
+}

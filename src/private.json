@@ -1,0 +1,21 @@
+{
+    "self_id": 2907279640,
+    "user_id": 2814721302,
+    "time": 1713011388,
+    "message_id": -2147483633,
+    "real_id": -2147483633,
+    "message_type": "group",
+    "sender": {
+        "user_id": 2814721302,
+        "nickname": "三三sama",
+        "card": "三三老婆",
+        "role": "admin"
+    },
+    "raw_message": "我测试看看",
+    "font": 14,
+    "sub_type": "normal",
+    "message": "我测试看看",
+    "message_format": "string",
+    "post_type": "message",
+    "group_id": 676832751
+}

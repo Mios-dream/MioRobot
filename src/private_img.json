@@ -1,0 +1,32 @@
+{
+    "time": 1712940429,
+    "self_id": 2907279640,
+    "post_type": "message",
+    "message_type": "private",
+    "sub_type": "friend",
+    "message_id": 379294626,
+    "target_id": 2814721302,
+    "peer_id": 2907279640,
+    "user_id": 2814721302,
+    "message": [
+        {
+            "data": {
+                "file": "ad2c1f7e5d0483945209665a80b3dc9a",
+                "subType": 0,
+                "type": "original",
+                "url": "https: //c2cpicdw.qpic.cn/offpic_new/0/123-0-AD2C1F7E5D0483945209665A80B3DC9A/0?term=2"
+            },
+            "type": "image"
+        }
+    ],
+    "raw_message": "[CQ:image,file=ad2c1f7e5d0483945209665a80b3dc9a,subType=0,type=original,url=https://c2cpicdw.qpic.cn/offpic_new/0/123-0-AD2C1F7E5D0483945209665A80B3DC9A/0?term=2]",
+    "font": 0,
+    "sender": {
+        "user_id": 2814721302,
+        "nickname": "三三sama",
+        "card": "",
+        "role": "member",
+        "title": "",
+        "level": ""
+    }
+}

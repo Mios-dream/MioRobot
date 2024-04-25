@@ -1,0 +1,34 @@
+{
+    "self_id": 2907279640,
+    "user_id": 2814721302,
+    "time": 1713706317,
+    "message_id": -2147480514,
+    "real_id": -2147480514,
+    "message_type": "group",
+    "sender": {
+        "user_id": 2814721302,
+        "nickname": "三三sama",
+        "card": "三三老婆",
+        "role": "admin"
+    },
+    "raw_message": "[CQ:reply,id=-2147480518]测试",
+    "font": 14,
+    "sub_type": "normal",
+    "message": [
+        {
+            "data": {
+                "id": "-2147480518"
+            },
+            "type": "reply"
+        },
+        {
+            "data": {
+                "text": "测试"
+            },
+            "type": "text"
+        }
+    ],
+    "message_format": "array",
+    "post_type": "message",
+    "group_id": 676832751
+}
