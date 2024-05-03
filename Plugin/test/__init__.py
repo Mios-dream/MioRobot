@@ -2,6 +2,7 @@ from plugins import Plugin
 from DataType.GroupMassageData import GroupMassageData
 from Models.Api.MessageApi import MessageApi
 from plugin_loader import PluginLoader
+from plugin_loader import PluginLoaderControl
 
 plugin = Plugin(
     auther="三三",
@@ -27,9 +28,9 @@ async def test(websocket: object, MessageData: GroupMassageData):
     # 开发者命令
     if MessageData.Message[0] == "测试":
         # await MessageApi.sendGroupMessage(websocket, MessageData, "重载后")
-        PluginLoaderControl = PluginLoader()
+
         await MessageApi.sendGroupMessage(
             websocket,
             MessageData,
-            "当前插件数量{}".format(PluginLoaderControl.plugin_num + 1),
+            "当前插件数量{}".format(PluginLoaderControl.plugin_num + 2),
         )

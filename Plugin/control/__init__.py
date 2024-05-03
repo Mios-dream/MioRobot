@@ -2,7 +2,7 @@ from plugins import Plugin
 from DataType.GroupMassageData import GroupMassageData
 from Models.Api.MessageApi import MessageApi
 from DataType.CQcode import CQcode
-from plugin_loader import PluginLoader
+from plugin_loader import PluginLoaderControl
 from log import Log
 
 
@@ -28,12 +28,10 @@ plugin = Plugin(
 @plugin.register
 async def Control(webscoket: object, MessageData: GroupMassageData) -> None:
     # 开发者命令
-    if MessageData.Message[0] == "#重载1":
+    if MessageData.Message[0] == "#重载":
         try:
-            PluginLoaderControl = PluginLoader()
 
             PluginLoaderControl.reload()
 
-            Log.info("重载成功")
         except Exception as e:
             Log.error(f"重载失败,错误信息：{e}")

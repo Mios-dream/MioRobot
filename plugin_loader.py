@@ -17,8 +17,6 @@ class PluginLoader:
     _plugin_recall_list = {}
     # 插件回调函数名列表,用于检查重复
     plugin_name_list = []
-    # 是否重新加载
-    _reload_flag = False
     # 加载的插件数量
     plugin_num = 0
     # 单例模式
@@ -34,7 +32,6 @@ class PluginLoader:
             self._plugin_list = os.listdir("Plugin")
             self._plugin_recall_list = {}
             self.plugin_name_list = []
-            self._reload_flag = False
             self.plugin_num = 0
             self._initialized = True
 
@@ -45,15 +42,7 @@ class PluginLoader:
         for plugin_name in self._plugin_list:
             try:
                 # 导入模块
-                plugin_model = import_module(f"Plugin.{plugin_name}")
-                if self._reload_flag:
-                    # plugin_model = reload(import_module(f"Plugin.{plugin_name}"))
-                    plugin_model = reload(plugin_model)
-                    Log.info("重载成功")
-                    self._reload_flag = False
-                # else:
-                #     # 导入模块
-                #     plugin_model = import_module(f"Plugin.{plugin_name}")
+                plugin_model = reload(import_module(f"Plugin.{plugin_name}"))
 
                 # 获取优先级
                 priority = plugin_model.plugin.setting["priority"]
@@ -121,10 +110,10 @@ class PluginLoader:
 
         Log.info("正在重新加载插件")
 
-        self._reload_flag = True
-
         # 重新加载插件
         self.loading()
+
+        Log.info("重载成功")
 
     async def call_back(self, websocket, Post_Type, data: MessageData) -> None:
         """
@@ -158,5 +147,5 @@ class PluginLoader:
                 )
 
 
-# # 单例初始化
-# PluginLoaderControl = PluginLoader()
+# 单例初始化
+PluginLoaderControl = PluginLoader()
