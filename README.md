@@ -37,7 +37,7 @@ python main.py
 
 ## 目录结构
 
-```yaml
+```dir
 DataType	数据类型文件夹
 	-CQcode.py	CQ码的解析
 	-MessageData.py 	消息类型基类
@@ -64,8 +64,8 @@ Models	必要模块
 
 Net	网络处理相关文件
 	-Receives.py	处理websocket请求
-
 ```
+
 
 
 
