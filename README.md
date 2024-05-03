@@ -39,32 +39,36 @@ python main.py
 
 ```dir
 DataType	数据类型文件夹
-	-CQcode.py	CQ码的解析
-	-MessageData.py 	消息类型基类
-	-GroupMassageData.py	群消息数据类型
-	-PrivateMessageDate.py 	私聊消息数据类型
+	├─CQcode.py	CQ码的解析
+	├─MessageData.py 	消息类型基类
+	├─GroupMassageData.py	群消息数据类型
+	└─PrivateMessageDate.py 	私聊消息数据类型
 
 Plugin	插件文件夹
-	-plugin_1
-	-plugin_2
+	├─plugin_1
+	└─plugin_2
 	
 
 Models	必要模块
-	-Api	所有消息发送api模块
-		-MessageApi.py	消息发送的模块
-		
-		
-	-Event	所有事件处理的模块
-		-EventContral.py 		事件处理中心
-		-GroupMessageEvent.py 	处理群聊事件
-		-PrivateMessageEvent.py	处理私聊事件
-		-NoticeEvent.py 	    处理通知
-		-MetaEvent.py		    处理元事件
-		-RequestEvent.py		处理请求事件
+	├─Api	所有消息发送api模块
+	│	└─MessageApi.py	消息发送的模块
+	│	
+	│	
+	└─Event	所有事件处理的模块
+		├─EventContral.py 		事件处理中心
+		├─GroupMessageEvent.py 	处理群聊事件
+		├─PrivateMessageEvent.py	处理私聊事件
+		├─NoticeEvent.py 	    处理通知
+		├─MetaEvent.py		    处理元事件
+		└─RequestEvent.py		处理请求事件
 
 Net	网络处理相关文件
-	-Receives.py	处理websocket请求
+	└─Receives.py	处理websocket请求
 ```
+
+
+
+
 
 
 
