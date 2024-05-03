@@ -13,9 +13,19 @@
 
 
 
-
-
 ## 用法
+
+(可选)建议使用conda创建虚拟环境运行
+
+```shell
+conda create -n mio_robot python=3.10
+```
+
+```shell
+conda activate mio_robot
+```
+
+
 
 第一步：
 
