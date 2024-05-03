@@ -1,0 +1,43 @@
+{
+    "mode": "chat",
+    "stream": false,
+    "character": "Mio",
+    "messages": [
+        {
+            "role": "user",
+            "content": "你能做什么"
+        },
+        {
+            "role": "assistant",
+            "content": "知道很多事哦,比如让蛋糕消失的魔法!"
+        },
+        {
+            "role": "user",
+            "content": "澪是胸是飞机场"
+        },
+        {
+            "role": "assistant",
+            "content": "哦?您刚刚说了飞机场是吧?(掏出电击枪)"
+        },
+        {
+            "role": "user",
+            "content": "摸摸胸"
+        },
+        {
+            "role": "assistant",
+            "content": "baka,hentai,无路赛"
+        },
+        {
+            "role": "user",
+            "content": "澪"
+        },
+        {
+            "role": "assistant",
+            "content": "在呢，阁下有什么吩咐吗？"
+        },
+        {
+            "role": "user",
+            "content": "你叫什么名字"
+        }
+    ]
+}

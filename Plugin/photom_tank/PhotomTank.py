@@ -123,8 +123,7 @@ async def phantom_tank_from_url(url1, url2, colorful=False):
         data_bytes = await asyncio.to_thread(
             PhantomTank.make_tank, display_img, hide_img
         )
-    with open("tank.txt", "w") as f:
-        f.write(base64.b64encode(data_bytes).decode())
+
     return base64.b64encode(data_bytes).decode()
 
 

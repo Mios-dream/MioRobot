@@ -62,7 +62,7 @@ class GroupMessageEvent:
                 # At消息
                 if self.MessageDataCacha.get("type", None) == "at":
                     self.At.append(
-                        int(self.MessageDataCacha.get("data").get("qq", None))
+                        str(self.MessageDataCacha.get("data").get("qq", None))
                     )
 
             # 删除原始格式化消息数据缓存

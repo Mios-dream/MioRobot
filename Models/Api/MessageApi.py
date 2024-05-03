@@ -6,7 +6,8 @@ from log import Log
 
 
 class MessageApi:
-    def __init__(self) -> None:
+
+    def __init__(self, websocket) -> None:
         pass
 
     @staticmethod
@@ -79,7 +80,7 @@ class MessageApi:
                 "data": {"content": ""},
             }
             # 判断message是否为字符串
-            if isinstance(message, (str, int, float)):
+            if isinstance(message, (str, int, float, bool)):
                 messagedata["data"]["content"] = message
                 messagechains.append(messagedata)
                 data["params"]["message"] = messagechains

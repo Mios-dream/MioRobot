@@ -17,6 +17,9 @@ plugin = Plugin(
         "load": True,
         # 插件回调地址
         "callback_name": "photo_tank",
+        # 是否阻止后续插件执行
+        "prevent_other_plugins": False,
+        "event": ["message"],
     },
 )
 
@@ -24,11 +27,15 @@ plugin = Plugin(
 @plugin.register
 async def photo_tank(websocket: object, MessageData: GroupMassageData):
     if MessageData.Message[0] == "幻影坦克":
+        # 如果图片数量大于等于2
         if len(MessageData.Images) == 2:
+
             await MessageApi.sendGroupMessage(websocket, MessageData, "正在生成中...")
+            # 生成图片
             imagedata = await phantom_tank_from_url(
                 MessageData.Images[0], MessageData.Images[1]
             )
+            # 发送图片
             await MessageApi.sendGroupMessage(
                 websocket, MessageData, CQcode.img(f"base64://{imagedata}")
             )
@@ -38,11 +45,14 @@ async def photo_tank(websocket: object, MessageData: GroupMassageData):
             )
 
     if MessageData.Message[0] == "幻彩坦克":
+        # 如果图片数量大于等于2
         if len(MessageData.Images) == 2:
             await MessageApi.sendGroupMessage(websocket, MessageData, "正在生成中...")
+            # 生成图片
             imagedata = await phantom_tank_from_url(
                 MessageData.Images[0], MessageData.Images[1], True
             )
+            # 发送图片
             await MessageApi.sendGroupMessage(
                 websocket, MessageData, CQcode.img(f"base64://{imagedata}")
             )

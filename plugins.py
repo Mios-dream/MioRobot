@@ -12,13 +12,17 @@ class Plugin:
     # 插件描述
     description = None
 
-    setting = {
+    default_setting = {
         # 加载优先级
         "priority": 0,
         # 插件是否可用启用
         "load": False,
         # 插件回调地址
         "callback_name": "",
+        # 是否阻止其他后续插件执行
+        "prevent_other_plugins": False,
+        # 需要监听的事件
+        "event": [],
     }
 
     def __init__(self, **info):
@@ -27,7 +31,9 @@ class Plugin:
         self.name = info.get("name")
         self.version = info.get("version")
         self.description = info.get("description")
-        self.setting = info.get("setting")
+        # 设置插件默认信息,很pythonic的字典合并方法
+        self.setting = {**self.default_setting, **info.get("setting")}
+        # self.setting = info.get("setting")
 
     def register(self, plugin):
         # 注册插件

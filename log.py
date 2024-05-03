@@ -1,3 +1,9 @@
+import colorama
+
+# 自动重置颜色
+colorama.init(autoreset=True)
+
+
 class Log:
     """
     简单的日志类
@@ -6,19 +12,21 @@ class Log:
 
     @staticmethod
     def info(msg):
-        print("信息:", msg)
+        print(f"{colorama.Fore.GREEN}\n信息:{msg}")
 
     @staticmethod
     def warning(msg):
-        print("警告:", msg)
+        # print(colorama.Fore.YELLOW + "\n警告:", msg)
+        print(f"{colorama.Fore.YELLOW}\n警告:{msg}")
 
     @staticmethod
     def error(msg):
-        print("错误:", msg)
+        # print(colorama.Fore.RED + "\n错误:", msg)
+        print(f"{colorama.Fore.RED}\n错误:{msg}")
 
     @staticmethod
     def adapter(msg):
         """
         输出收到的上报消息
         """
-        print("上报消息:", msg)
+        print("\n上报消息:", msg)

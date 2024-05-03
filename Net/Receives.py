@@ -15,13 +15,11 @@ class OneBotReceive:
 
         self.config = config
 
-    async def SendMessage(self, msg):
-        await self.Websocket.send(msg)
-
     async def Start(self):
         self.Websocket = await websockets.connect(self.config.Websocket)
         Log.info("websockets连接成功")
-        self.plugin = PluginLoader(self.Websocket)
+        # 导入单例插件类
+        self.plugin = PluginLoader()
         self.plugin.loading()
         await self.Receive()
 
@@ -37,15 +35,10 @@ class OneBotReceive:
                 MessageData = EventContral(obj)
                 try:
                     if MessageData:
-                        if MessageData.Post_Type == "message":
 
-                            # 开发者命令
-                            if MessageData.Message[0] == "#重载":
-                                self.plugin.reload()
-
-                                print("重载成功")
-
-                            await self.plugin.call_back(MessageData)
+                        await self.plugin.call_back(
+                            self.Websocket, MessageData.Post_Type, MessageData
+                        )
 
                 except Exception as e:
                     exc_type, exc_value, exc_traceback = sys.exc_info()

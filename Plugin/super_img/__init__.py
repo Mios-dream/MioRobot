@@ -19,17 +19,22 @@ plugin = Plugin(
         "load": True,
         # 插件回调地址
         "callback_name": "super_img",
+        # 是否阻止其他插件执行
+        "prevent_other_plugins": False,
+        "event": ["message"],
     },
 )
 
 
 @plugin.register
 async def super_img(websocket: object, MessageData: GroupMassageData):
-
+    # 读取qq缓存
     with open("Plugin/super_img/cacha/cacha.json", "r+") as f:
         data = json.loads(f.read())
         f.close()
+    # 强制转换成字符串，防止错误读取
     QQ = str(MessageData.QQ)
+
     if MessageData.Message[0] == "图片超分":
         if running:
             await MessageApi.sendGroupMessage(

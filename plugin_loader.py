@@ -2,7 +2,6 @@ import os
 from importlib import import_module, reload
 from log import Log
 from DataType.MessageData import MessageData
-import asyncio
 import traceback
 import sys
 
@@ -22,9 +21,22 @@ class PluginLoader:
     _reload_flag = False
     # 加载的插件数量
     plugin_num = 0
+    # 单例模式
+    _instance = None
 
-    def __init__(self, websocket: object) -> None:
-        self.websocket = websocket
+    def __new__(cls, *args, **kwargs):
+        if not cls._instance:
+            cls._instance = super(PluginLoader, cls).__new__(cls, *args, **kwargs)
+        return cls._instance
+
+    def __init__(self) -> None:
+        if not hasattr(self, "_initialized"):  # 防止__init__方法的重复调用
+            self._plugin_list = os.listdir("Plugin")
+            self._plugin_recall_list = {}
+            self.plugin_name_list = []
+            self._reload_flag = False
+            self.plugin_num = 0
+            self._initialized = True
 
     def loading(self) -> None:
         """
@@ -32,12 +44,15 @@ class PluginLoader:
         """
         for plugin_name in self._plugin_list:
             try:
+                # 导入模块
+                plugin_model = import_module(f"Plugin.{plugin_name}")
                 if self._reload_flag:
-                    plugin_model = reload(import_module(f"Plugin.{plugin_name}"))
+                    # plugin_model = reload(import_module(f"Plugin.{plugin_name}"))
+                    plugin_model = reload(plugin_model)
                     self._reload_flag = False
-                else:
-                    # 导入模块
-                    plugin_model = import_module(f"Plugin.{plugin_name}")
+                # else:
+                #     # 导入模块
+                #     plugin_model = import_module(f"Plugin.{plugin_name}")
 
                 # 获取优先级
                 priority = plugin_model.plugin.setting["priority"]
@@ -94,6 +109,7 @@ class PluginLoader:
         # 删除旧插件
         # 插件路径
         self._plugin_list = os.listdir("Plugin")
+
         # 插件回调函数对象字典
         self._plugin_recall_list = {}
         # 插件回调函数名列表,用于检查重复
@@ -103,26 +119,34 @@ class PluginLoader:
         self.plugin_num = 0
 
         Log.info("正在重新加载插件")
+
         self._reload_flag = True
+
         # 重新加载插件
         self.loading()
 
-    async def call_back(self, data: MessageData) -> None:
+    async def call_back(self, websocket, Post_Type, data: MessageData) -> None:
         """
         调用插件
         """
 
         # 遍历插件回调函数对象字典
         for plugin_model in self.sorted_dict.keys():
-            # 获取插件名
-            plugin_name = plugin_model.plugin.name
-            # 获取回调函数名
-            callback_name = plugin_model.plugin.setting["callback_name"]
 
             try:
-                # print(f"plugin_model.{callback_name}")
-                callback = eval(f"plugin_model.{callback_name}")
-                await callback(self.websocket, data)
+                # 获取插件名
+                plugin_name = plugin_model.plugin.name
+                # 获取回调函数名
+                callback_name = plugin_model.plugin.setting["callback_name"]
+
+                if Post_Type in plugin_model.plugin.setting["event"]:
+                    # 调用插件
+                    callback = eval(f"plugin_model.{callback_name}")
+                    await callback(websocket, data)
+
+                # 检查是否需要中断其他插件
+                # if plugin_model.plugin.setting["prevent_other_plugins"]:
+                #     break
 
             except Exception as e:
                 exc_type, exc_value, exc_traceback = sys.exc_info()
@@ -131,3 +155,7 @@ class PluginLoader:
                 Log.error(
                     f"调用插件 {plugin_name} 失败。\n行号：{tb[-1][1]} \n错误信息为: {e}"
                 )
+
+
+# # 单例初始化
+# PluginLoaderControl = PluginLoader()
