@@ -49,6 +49,7 @@ class PluginLoader:
                 if self._reload_flag:
                     # plugin_model = reload(import_module(f"Plugin.{plugin_name}"))
                     plugin_model = reload(plugin_model)
+                    Log.info("重载成功")
                     self._reload_flag = False
                 # else:
                 #     # 导入模块

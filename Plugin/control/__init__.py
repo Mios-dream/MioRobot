@@ -28,7 +28,7 @@ plugin = Plugin(
 @plugin.register
 async def Control(webscoket: object, MessageData: GroupMassageData) -> None:
     # 开发者命令
-    if MessageData.Message[0] == "#重载":
+    if MessageData.Message[0] == "#重载1":
         try:
             PluginLoaderControl = PluginLoader()
 

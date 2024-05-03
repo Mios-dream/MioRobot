@@ -34,12 +34,21 @@ class OneBotReceive:
                 # 处理消息
                 MessageData = EventContral(obj)
                 try:
+                    # if MessageData:
+
+                    #     await self.plugin.call_back(
+                    #         self.Websocket, MessageData.Post_Type, MessageData
+                    #     )
+                    # 原来的代码
                     if MessageData:
+                        # 重载
+                        if MessageData.Post_Type == "message":
+                            if MessageData.Message[0] == "#重载":
+                                self.plugin.reload()
 
-                        await self.plugin.call_back(
-                            self.Websocket, MessageData.Post_Type, MessageData
-                        )
-
+                            await self.plugin.call_back(
+                                self.Websocket, MessageData.Post_Type, MessageData
+                            )
                 except Exception as e:
                     exc_type, exc_value, exc_traceback = sys.exc_info()
                     tb = traceback.extract_tb(exc_traceback)

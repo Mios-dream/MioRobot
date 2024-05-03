@@ -31,5 +31,5 @@ async def test(websocket: object, MessageData: GroupMassageData):
         await MessageApi.sendGroupMessage(
             websocket,
             MessageData,
-            "当前插件数量{}".format(PluginLoaderControl.plugin_num + 3),
+            "当前插件数量{}".format(PluginLoaderControl.plugin_num + 1),
         )
