@@ -40,7 +40,7 @@ async def super_img(websocket: object, MessageData: GroupMassageData):
             await MessageApi.sendGroupMessage(
                 websocket, MessageData, "还有图片正在超分，请阁下再等一下吧"
             )
-            return
+            return 0
         if MessageData.Images:
             data[QQ] = False
             with open("Plugin/super_img/cacha/cacha.json", "w+") as f:

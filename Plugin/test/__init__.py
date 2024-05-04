@@ -26,10 +26,9 @@ plugin = Plugin(
 async def test(websocket: object, MessageData: GroupMassageData):
     # 开发者命令
     if MessageData.Message[0] == "测试":
-        # await MessageApi.sendGroupMessage(websocket, MessageData, "重载后")
 
         await MessageApi.sendGroupMessage(
             websocket,
             MessageData,
-            "当前插件数量{}".format(PluginLoaderControl.plugin_num + 2),
+            "当前插件数量{}".format(PluginLoaderControl.plugin_num),
         )

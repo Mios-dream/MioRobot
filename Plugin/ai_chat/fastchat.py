@@ -68,7 +68,7 @@ async def chat_fastapi(
 
     except Exception as e:
         print(f"【{content}】信息回复异常")
-        return "我听不懂你说什么"
+        return "澪不知道该如何回答...."
 
     assistant_message = response["choices"][0]["message"]["content"]
     # 去除多余信息

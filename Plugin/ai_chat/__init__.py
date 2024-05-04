@@ -34,7 +34,7 @@ async def AiChat(webscoket: object, MessageData: GroupMassageData) -> None:
             # 调用fastchat进行回复
             response = await chat_fastapi(MessageData.Message[0][1:])
             # 回复语音的概率
-            random_num = 0.3
+            random_num = 0
             # 如果回复超过30字或者随机数小于0.3则只回复文字
             if (len(response.encode("utf-8")) // 4 > 30) or (
                 random.random() >= random_num
@@ -49,6 +49,8 @@ async def AiChat(webscoket: object, MessageData: GroupMassageData) -> None:
                 await MessageApi.sendGroupMessage(
                     webscoket, MessageData, CQcode.record(url)
                 )
+            # 中断后续回复
+            return 0
 
     # 以@机器人 为指令
     if MessageData.At:
@@ -74,3 +76,5 @@ async def AiChat(webscoket: object, MessageData: GroupMassageData) -> None:
                 await MessageApi.sendGroupMessage(
                     webscoket, MessageData, CQcode.record(url)
                 )
+            # 中断后续回复
+            return 0

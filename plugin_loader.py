@@ -132,7 +132,10 @@ class PluginLoader:
                 if Post_Type in plugin_model.plugin.setting["event"]:
                     # 调用插件
                     callback = eval(f"plugin_model.{callback_name}")
-                    await callback(websocket, data)
+                    code = await callback(websocket, data)
+                    # 判断检查是否需要中断其他插件
+                    if code == 0:
+                        break
 
                 # 检查是否需要中断其他插件
                 # if plugin_model.plugin.setting["prevent_other_plugins"]:

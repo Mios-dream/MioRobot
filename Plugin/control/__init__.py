@@ -32,6 +32,8 @@ async def Control(webscoket: object, MessageData: GroupMassageData) -> None:
         try:
 
             PluginLoaderControl.reload()
+            await MessageApi.sendGroupMessage(webscoket, MessageData, "重载完成啦！")
+            return 0
 
         except Exception as e:
             Log.error(f"重载失败,错误信息：{e}")

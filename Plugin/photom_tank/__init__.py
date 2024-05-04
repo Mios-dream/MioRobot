@@ -43,6 +43,8 @@ async def photo_tank(websocket: object, MessageData: GroupMassageData):
             await MessageApi.sendGroupMessage(
                 websocket, MessageData, "请阁下携带两张图片"
             )
+        # 中断后续回复
+        return 0
 
     if MessageData.Message[0] == "幻彩坦克":
         # 如果图片数量大于等于2
@@ -60,3 +62,6 @@ async def photo_tank(websocket: object, MessageData: GroupMassageData):
             await MessageApi.sendGroupMessage(
                 websocket, MessageData, "请阁下携带两张图片"
             )
+
+        # 中断后续回复
+        return 0

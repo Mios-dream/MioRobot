@@ -27,17 +27,17 @@ conda activate mio_robot
 
 
 
-第一步：
+#### 第一步：
 
 修改 config.json 中的配置信息
 
-第二步：
+#### 第二步：
 
 ```bash
 pip install -r requirements.txt
 ```
 
-第三步：
+#### 第三步：
 
 ```bash
 python main.py
