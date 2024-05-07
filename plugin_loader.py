@@ -4,6 +4,7 @@ from log import Log
 from DataType.MessageData import MessageData
 import traceback
 import sys
+import time
 
 
 class PluginLoader:
@@ -11,6 +12,8 @@ class PluginLoader:
     插件加载器
     """
 
+    # 单例模式
+    _instance = None
     # 插件路径
     _plugin_list = os.listdir("Plugin")
     # 插件回调函数对象字典
@@ -19,8 +22,17 @@ class PluginLoader:
     plugin_name_list = []
     # 加载的插件数量
     plugin_num = 0
-    # 单例模式
-    _instance = None
+
+    # 性能警告阈值
+    performance_warning_threshold = 1
+    # 全部插件初始化加载时间
+    plugin_load_time = 0
+
+    # 全部插件调用耗时记录
+    plugin_call_time_all = 0
+
+    # 单插件调用耗时记录
+    plugin_call_time = {}
 
     def __new__(cls, *args, **kwargs):
         if not cls._instance:
@@ -39,6 +51,9 @@ class PluginLoader:
         """
         加载插件
         """
+        # 统计加载插件的时间
+        start_time = time.time()
+
         for plugin_name in self._plugin_list:
             try:
                 # 导入模块
@@ -91,6 +106,8 @@ class PluginLoader:
             )
         )
         Log.info(f"成功加载了{self.plugin_num}个插件")
+        self.plugin_load_time = time.time() - start_time
+        Log.info(f"加载插件耗时: {self.plugin_load_time}秒")
 
     def reload(self) -> None:
         """
@@ -104,7 +121,8 @@ class PluginLoader:
         self._plugin_recall_list = {}
         # 插件回调函数名列表,用于检查重复
         self.plugin_name_list = []
-
+        # 全部插件调用耗时记录
+        plugin_call_time = {}
         # 加载的插件数量
         self.plugin_num = 0
 
@@ -119,7 +137,8 @@ class PluginLoader:
         """
         调用插件
         """
-
+        # 统计插件调用的时间
+        start_time = time.time()
         # 遍历插件回调函数对象字典
         for plugin_model in self.sorted_dict.keys():
 
@@ -129,17 +148,35 @@ class PluginLoader:
                 # 获取回调函数名
                 callback_name = plugin_model.plugin.setting["callback_name"]
 
+                developer_setting = plugin_model.plugin.developer_setting
+
                 if Post_Type in plugin_model.plugin.setting["event"]:
+
+                    # 记录插件运行时间
+                    if plugin_model.plugin.developer_setting["count_runtime"]:
+                        start_time = time.time()
+
                     # 调用插件
                     callback = eval(f"plugin_model.{callback_name}")
                     code = await callback(websocket, data)
+
+                    # 记录插件运行时间
+                    if developer_setting["count_runtime"]:
+                        # 统计插件运行时间
+                        runtime = time.time() - start_time
+                        # 将插件运行时间添加到字典中
+                        self.plugin_call_time[plugin_name] = runtime
+                        if (
+                            runtime > developer_setting["runtime_threshold"]
+                            and developer_setting["allow_high_time_cost"]
+                        ):
+                            Log.warning(
+                                f"插件({plugin_name})运行耗时: {runtime}秒,性能较低，请检查插件!"
+                            )
+
                     # 判断检查是否需要中断其他插件
                     if code == 0:
                         break
-
-                # 检查是否需要中断其他插件
-                # if plugin_model.plugin.setting["prevent_other_plugins"]:
-                #     break
 
             except Exception as e:
                 exc_type, exc_value, exc_traceback = sys.exc_info()
@@ -148,6 +185,13 @@ class PluginLoader:
                 Log.error(
                     f"调用插件 {plugin_name} 失败。\n行号：{tb[-1][1]} \n错误信息为: {e}"
                 )
+
+        # 统计插件调用的时间
+        self.plugin_call_time = time.time() - start_time
+        if self.plugin_call_time > self.performance_warning_threshold:
+            Log.warning(
+                f"插件调用耗时: {self.plugin_call_time}秒,性能较低，请检查插件!"
+            )
 
 
 # 单例初始化

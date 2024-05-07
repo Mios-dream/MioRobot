@@ -4,10 +4,10 @@ from DataType.PrivateMessageDate import PrivateMessageDate
 class PrivateMessageEvent:
 
     def __init__(self, data: PrivateMessageDate):
-        self.QQ = data.get("user_id")
+        self.QQ = str(data.get("user_id"))
         self.MessageData = data.get("message", None)
         self.Time = data.get("time")
-        self.Robot = data.get("self_id")
+        self.Robot = str(data.get("self_id"))
         self.Sub_Type = data.get("sub_type")
         self.Message_ID = data.get("message_id")
         self.RowMessage = data.get("raw_message")

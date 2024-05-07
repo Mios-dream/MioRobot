@@ -43,7 +43,7 @@ async def countdown(websocket: object, MessageData: GroupMassageData):
                 [f"距离高考还有{RemainingDays}天！", "“为世上所以美好而战”", "加油!"],
             ]
             await MessageApi.sendGroupMessage(
-                websocket, MessageData, random.choices(reply)
+                websocket, MessageData, random.choices(reply)[0]
             )
         elif RemainingDays > -3:
 

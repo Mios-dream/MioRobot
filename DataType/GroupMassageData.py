@@ -24,11 +24,11 @@ class GroupMassageData(MessageData):
     # 发送者头衔
     Title: str
     # robot的QQ号
-    Robot: int
+    Robot: str
     # 昵称
     Nickname: str
     # 群号
-    Group: int
+    Group: str
     # 群昵称Card
     GroupNickname: str
     # 群消息

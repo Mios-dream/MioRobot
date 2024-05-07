@@ -30,7 +30,7 @@ class GroupMessageEvent:
         # 昵称
         self.Nickname = data.get("sender").get("nickname", None)
         # 群号
-        self.Group = data.get("group_id", None)
+        self.Group = str(data.get("group_id", None))
         # 群昵称
         self.GroupNickname = data.get("sender").get("card", None)
 

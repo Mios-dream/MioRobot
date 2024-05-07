@@ -7,10 +7,10 @@ class PrivateMessageDate(MessageData):
     """
 
     Time: int
-    QQ: int
-    Robot: int
+    QQ: str
+    Robot: str
     Post_Type: str
-    Message: str
+    Message: list
     Message_Type: str
     Sub_Type: str
     Message_Id: int
