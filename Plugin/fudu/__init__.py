@@ -7,9 +7,9 @@ import requests
 
 plugin = Plugin(
     auther="ranfey",
-    name="复读",
+    name="主动复读",
     version="1.0",
-    description="复读",
+    description="主动复读",
     setting={
         # 加载优先级,数字越大优先级越高
         "priority": 100,

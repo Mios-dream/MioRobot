@@ -26,6 +26,7 @@ plugin = Plugin(
 
 def remove_exclamation_marks(s):
     # 正则表达式匹配字符串开头和结尾的 '！' 或 '!'
+    # 在目标后加！！或!! 触发发病
     pattern = r'^[！!]+|[！!]+$'
     # 替换匹配的部分为空字符串
     result = re.sub(pattern, '', s)
