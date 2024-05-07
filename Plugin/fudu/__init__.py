@@ -1,47 +1,47 @@
 from plugins import Plugin
 from DataType.GroupMassageData import GroupMassageData
 from Models.Api.MessageApi import MessageApi
-from datetime import datetime
-import random
+from DataType.CQcode import CQcode
+import requests
 
 
 plugin = Plugin(
-    auther="三三",
-    name="复读机",
+    auther="ranfey",
+    name="复读",
     version="1.0",
-    description="复读机",
+    description="复读",
     setting={
         # 加载优先级,数字越大优先级越高
-        "priority": 0,
+        "priority": 100,
         # 插件是否可用启用
-        "load": False,
+        "load": True,
         # 插件回调地址
         "callback_name": "fudu",
-        # 是否阻止后续插件执行
+        # 是否阻止其他插件执行
         "prevent_other_plugins": False,
         "event": ["message"],
     },
 )
 
 
-temp = {}
-
-
+class TTemp(object):
+    temp0=""
+    tempQQ=""
+    def setFuduTemp(self,MessageData:GroupMassageData):
+        TTemp.temp0=MessageData.RowMessage
+        TTemp.tempQQ=MessageData.QQ
+    def setFudu000(self):
+        TTemp.temp0=""
+        TTemp.tempQQ=""
+GroupClass={}
+def copyGroup(MessageData:str):
+    GroupClass.setdefault(MessageData, TTemp())
 @plugin.register
 async def fudu(websocket: object, MessageData: GroupMassageData):
-
-    if MessageData.Message[0]:
-        if MessageData.QQ in temp.keys():
-            # 判断是否是复读，只根据QQ判断
-            if temp[MessageData.QQ] == MessageData.Message[0]:
-                await MessageApi.sendGroupMessage(
-                    websocket, MessageData, MessageData.Message[0]
-                )
-            else:
-                temp[MessageData.QQ] = MessageData.Message[0]
-        else:
-            temp[MessageData.QQ] = MessageData.Message[0]
-
-        # 清除缓存，防止内存溢出
-        if len(temp) > 1000:
-            temp.clear()
+    GroupTT=str(MessageData.Group)
+    copyGroup(GroupTT)
+    if(GroupClass[GroupTT].temp0 == MessageData.RowMessage and GroupClass[GroupTT].tempQQ!=MessageData.QQ):
+        await MessageApi.sendGroupMessage(websocket, MessageData,MessageData.RowMessage)
+        GroupClass[GroupTT].setFudu000()
+    else:
+        GroupClass[GroupTT].setFuduTemp(MessageData)
