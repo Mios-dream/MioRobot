@@ -40,12 +40,14 @@ class Plugin:
         self.name = info.get("name")
         self.version = info.get("version")
         self.description = info.get("description")
-        # 设置插件默认信息,很pythonic的字典合并方法
-        self.setting = {**self.default_setting, **info.get("setting")}
-        # self.setting = info.get("setting")
+        # 设置插件默认信息,安全的字典合并方法
+        self.setting = {**self.default_setting, **info.get("setting", {})}
         self.developer_setting = {
             **self.developer_setting,
-            **info.get("developer_setting"),
+            **info.get(
+                "developer_setting", {}
+            ),  # 笨比三三这个developer_setting是空的，合并时出错了
+            # 现在先跳过了，等你完善developer_setting
         }
 
     def register(self, plugin):
