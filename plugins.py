@@ -36,10 +36,10 @@ class Plugin:
 
     def __init__(self, **info):
         # 初始化插件信息
-        self.auther = info.get("auther")
-        self.name = info.get("name")
-        self.version = info.get("version")
-        self.description = info.get("description")
+        self.auther = info.get("auther", None)
+        self.name = info.get("name", None)
+        self.version = info.get("version", None)
+        self.description = info.get("description", None)
         # 设置插件默认信息,很pythonic的字典合并方法
         self.setting = {**self.default_setting, **info.get("setting")}
         # self.setting = info.get("setting")
