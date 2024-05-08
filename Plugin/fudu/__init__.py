@@ -1,8 +1,6 @@
 from plugins import Plugin
 from DataType.GroupMassageData import GroupMassageData
 from Models.Api.MessageApi import MessageApi
-from datetime import datetime
-import random
 
 
 plugin = Plugin(
@@ -31,15 +29,19 @@ temp = {}
 async def fudu(websocket: object, MessageData: GroupMassageData):
 
     if MessageData.Message[0]:
+        # 查询QQ是否在复读机缓存中
         if MessageData.QQ in temp.keys():
             # 判断是否是复读，只根据QQ判断
             if temp[MessageData.QQ] == MessageData.Message[0]:
+                # 发送复读
                 await MessageApi.sendGroupMessage(
                     websocket, MessageData, MessageData.Message[0]
                 )
             else:
+                # 缓存消息
                 temp[MessageData.QQ] = MessageData.Message[0]
         else:
+            # 缓存消息
             temp[MessageData.QQ] = MessageData.Message[0]
 
         # 清除缓存，防止内存溢出

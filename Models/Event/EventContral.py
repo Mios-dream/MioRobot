@@ -4,9 +4,12 @@ from Models.Event.NoticeEvent import NoticeEvent
 from Models.Event.RequestEvent import RequestEvent
 from Models.Event.MetaEvent import MetaEvent
 from DataType.MessageData import MessageData
+from DataType.GroupMassageData import GroupMassageData
+from DataType.PrivateMessageData import PrivateMessageData
+from typing import Union
 
 
-def EventContral(data: MessageData):
+def EventContral(data: MessageData) -> Union[GroupMassageData, PrivateMessageData]:
 
     try:
         Post_Type = data.get("post_type", None)

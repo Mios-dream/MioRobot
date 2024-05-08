@@ -3,7 +3,7 @@ from DataType.GroupMassageData import GroupMassageData
 
 class GroupMessageEvent:
 
-    def __init__(self, data: dict[GroupMassageData]):
+    def __init__(self, data: dict):
         # 事件类型，为message
         self.Post_Type = data.get("post_type", None)
 

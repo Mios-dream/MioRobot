@@ -1,10 +1,10 @@
 from Net import Receives
 import asyncio
-
 from init_config import Config
 
 
 async def main():
+    # 初始化配置
     config = Config()
     recv = Receives.OneBotReceive(config)
     await recv.Start()

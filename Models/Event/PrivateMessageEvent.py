@@ -1,9 +1,9 @@
-from DataType.PrivateMessageDate import PrivateMessageDate
+from DataType.PrivateMessageData import PrivateMessageData
 
 
 class PrivateMessageEvent:
 
-    def __init__(self, data: PrivateMessageDate):
+    def __init__(self, data: PrivateMessageData):
         self.QQ = str(data.get("user_id"))
         self.MessageData = data.get("message", None)
         self.Time = data.get("time")

@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Union
 from DataType.GroupMassageData import GroupMassageData
 import asyncio
 import json
@@ -14,7 +14,7 @@ class MessageApi:
     async def sendGroupMessage(
         websocket: object,
         MessageData: GroupMassageData,
-        message: Tuple[str | list[dict]],
+        message: Union[str, list, list[dict]],
         is_node: bool = False,
     ):
         """
@@ -110,7 +110,7 @@ class MessageApi:
     async def sendPrivateMessage(
         websocket: object,
         MessageData: GroupMassageData,
-        message: Tuple[str | list[dict]],
+        message: Union[str, list, list[dict]],
         is_node: bool = False,
     ):
         pass

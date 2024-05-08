@@ -20,13 +20,18 @@ class OneBotReceive:
         Log.info("websockets连接成功")
         # 导入单例插件类
         self.plugin = PluginLoaderControl
+        # 调用插件的初始化方法
         self.plugin.loading()
+
         await self.Receive()
 
     async def Receive(self):
         while True:
+            # 接收消息
             context = await self.Websocket.recv()
+            # 判断是否为空
             if not context.isspace():
+                # 将收到的消息转换为json对象
                 obj = json.loads(context)
                 # 输出收到的消息到控制台
                 Log.adapter(obj)
@@ -35,7 +40,7 @@ class OneBotReceive:
                 MessageData = EventContral(obj)
                 try:
                     if MessageData:
-
+                        # 调用插件的接收方法
                         await self.plugin.call_back(
                             self.Websocket, MessageData.Post_Type, MessageData
                         )

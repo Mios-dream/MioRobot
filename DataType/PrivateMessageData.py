@@ -1,7 +1,7 @@
 from DataType.MessageData import MessageData
 
 
-class PrivateMessageDate(MessageData):
+class PrivateMessageData(MessageData):
     """
     私聊消息数据类
     """
