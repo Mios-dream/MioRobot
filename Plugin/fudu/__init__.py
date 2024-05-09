@@ -6,7 +6,7 @@ import requests
 
 
 plugin = Plugin(
-    auther="ranfey",
+    auther="然飞 ranfey",
     name="主动复读",
     version="1.0",
     description="主动复读",
@@ -14,7 +14,7 @@ plugin = Plugin(
         # 加载优先级,数字越大优先级越高
         "priority": 100,
         # 插件是否可用启用
-        "load": False,
+        "load": True,
         # 插件回调地址
         "callback_name": "fudu",
         # 是否阻止其他插件执行
