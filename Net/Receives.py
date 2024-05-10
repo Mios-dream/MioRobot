@@ -6,6 +6,7 @@ from Models.Event.EventContral import EventContral
 import traceback
 from plugin_loader import PluginLoaderControl
 import sys
+import time
 
 
 class OneBotReceive:
@@ -16,14 +17,20 @@ class OneBotReceive:
         self.config = config
 
     async def Start(self):
-        self.Websocket = await websockets.connect(self.config.Websocket)
-        Log.info("websockets连接成功")
-        # 导入单例插件类
-        self.plugin = PluginLoaderControl
-        # 调用插件的初始化方法
-        self.plugin.loading()
+        try:
+            self.Websocket = await websockets.connect(self.config.Websocket)
+            Log.info("websockets连接成功")
+            # 导入单例插件类
+            self.plugin = PluginLoaderControl
+            # 调用插件的初始化方法
+            self.plugin.loading()
 
-        await self.Receive()
+            await self.Receive()
+        except Exception as e:
+            Log.error("websockets连接失败，请检查配置")
+            Log.info("将在10秒后尝试重新连接")
+            time.sleep(10)
+            await self.Start()
 
     async def Receive(self):
         while True:

@@ -23,6 +23,10 @@ plugin = Plugin(
         "prevent_other_plugins": False,
         "event": ["message"],
     },
+    developer_setting={
+        # 允许高耗时操作
+        "allow_high_time_cost": True,
+    },
 )
 
 
@@ -84,6 +88,9 @@ async def super_img(websocket: object, MessageData: GroupMassageData):
                 f.close()
 
             await MessageApi.sendGroupMessage(websocket, MessageData, "图片正在处理中")
+            # await MessageApi.sendGroupMessage(
+            #     websocket, MessageData, MessageData.Images[0]
+            # )
             async with aiohttp.ClientSession() as session:
                 async with session.get(url=MessageData.Images[0]) as resp:
                     img_data = await resp.read()

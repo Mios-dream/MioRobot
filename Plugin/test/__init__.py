@@ -30,5 +30,7 @@ async def test(websocket: object, MessageData: GroupMassageData):
         await MessageApi.sendGroupMessage(
             websocket,
             MessageData,
-            "当前插件数量{}".format(PluginLoaderControl.plugin_num),
+            "当前插件数量{},插件加载耗时{:.4f}秒".format(
+                PluginLoaderControl.plugin_num, PluginLoaderControl.plugin_load_time
+            ),
         )

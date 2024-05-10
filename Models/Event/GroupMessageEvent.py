@@ -55,10 +55,22 @@ class GroupMessageEvent:
                         self.MessageDataCacha.get("data").get("text", None)
                     )
                 # 图片消息
+                # 原始图片
+                # if self.MessageDataCacha.get("type", None) == "image":
+                #     self.Images.append(
+                #         self.MessageDataCacha.get("data").get("url", None)
+                #     )
+
+                # 替换图床链接后的图片，这只是一个临时方案
                 if self.MessageDataCacha.get("type", None) == "image":
                     self.Images.append(
-                        self.MessageDataCacha.get("data").get("url", None)
+                        self.MessageDataCacha.get("data")
+                        .get("url", None)
+                        .replace(
+                            "https://multimedia.nt.qq.com.cn/", "https://gchat.qpic.cn/"
+                        )
                     )
+
                 # At消息
                 if self.MessageDataCacha.get("type", None) == "at":
                     self.At.append(

@@ -15,15 +15,16 @@ class PluginLoader:
     # 单例模式
     _instance = None
     # 插件路径
-    _plugin_list = os.listdir("Plugin")
-    # 插件回调函数对象字典
-    _plugin_recall_list = {}
+    _plugin_path_list = os.listdir("Plugin")
+    # 插件对象字典
+    plugin_list = {}
     # 插件回调函数名列表,用于检查重复
     plugin_name_list = []
+
     # 加载的插件数量
     plugin_num = 0
 
-    # 性能警告阈值
+    # 性能警告阈值,单位为秒
     performance_warning_threshold = 1
     # 全部插件初始化加载时间
     plugin_load_time = 0
@@ -41,8 +42,8 @@ class PluginLoader:
 
     def __init__(self) -> None:
         if not hasattr(self, "_initialized"):  # 防止__init__方法的重复调用
-            self._plugin_list = os.listdir("Plugin")
-            self._plugin_recall_list = {}
+            self._plugin_path_list = os.listdir("Plugin")
+            self.plugin_list = {}
             self.plugin_name_list = []
             self.plugin_num = 0
             self._initialized = True
@@ -54,7 +55,7 @@ class PluginLoader:
         # 统计加载插件的时间
         start_time = time.time()
 
-        for plugin_name in self._plugin_list:
+        for plugin_name in self._plugin_path_list:
             try:
                 # 导入模块
                 plugin_model = reload(import_module(f"Plugin.{plugin_name}"))
@@ -83,8 +84,9 @@ class PluginLoader:
                     )
                     continue
 
-                # 将需要回调函数的模块添加到字典中
-                self._plugin_recall_list[plugin_model] = priority
+                # 将插件实例添加到字典中
+                self.plugin_list[plugin_model] = priority
+
                 # 记录回调函数名
                 self.plugin_name_list.append(callback_name)
 
@@ -99,13 +101,12 @@ class PluginLoader:
                     f"加载插件 {plugin_name} 失败。\n行号：{tb[-1][1]}\n错误信息为: {e}"
                 )
 
-        # 按照优先级排序
-        self.sorted_dict = dict(
-            sorted(
-                self._plugin_recall_list.items(), key=lambda item: item[1], reverse=True
-            )
+        # 将插件按照优先级排序
+        self.plugin_list = dict(
+            sorted(self.plugin_list.items(), key=lambda item: item[1], reverse=True)
         )
         Log.info(f"成功加载了{self.plugin_num}个插件")
+
         self.plugin_load_time = time.time() - start_time
         Log.info(f"加载插件耗时: {self.plugin_load_time}秒")
 
@@ -115,14 +116,14 @@ class PluginLoader:
         """
         # 删除旧插件
         # 插件路径
-        self._plugin_list = os.listdir("Plugin")
+        self._plugin_path_list = os.listdir("Plugin")
 
         # 插件回调函数对象字典
-        self._plugin_recall_list = {}
+        self.plugin_list = {}
         # 插件回调函数名列表,用于检查重复
         self.plugin_name_list = []
         # 全部插件调用耗时记录
-        plugin_call_time = {}
+        self.plugin_call_time = {}
         # 加载的插件数量
         self.plugin_num = 0
 
@@ -140,7 +141,7 @@ class PluginLoader:
         # 统计插件调用的时间
         start_time = time.time()
         # 遍历插件回调函数对象字典
-        for plugin_model in self.sorted_dict.keys():
+        for plugin_model in self.plugin_list.keys():
 
             try:
                 # 获取插件名
@@ -168,7 +169,7 @@ class PluginLoader:
                         self.plugin_call_time[plugin_name] = runtime
                         if (
                             runtime > developer_setting["runtime_threshold"]
-                            and developer_setting["allow_high_time_cost"]
+                            and not developer_setting["allow_high_time_cost"]
                         ):
                             Log.warning(
                                 f"插件({plugin_name})运行耗时: {runtime}秒,性能较低，请检查插件!"

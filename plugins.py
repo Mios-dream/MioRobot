@@ -44,10 +44,7 @@ class Plugin:
         self.setting = {**self.default_setting, **info.get("setting", {})}
         self.developer_setting = {
             **self.developer_setting,
-            **info.get(
-                "developer_setting", {}
-            ),  # 笨比三三这个developer_setting是空的，合并时出错了
-            # 现在先跳过了，等你完善developer_setting
+            **info.get("developer_setting", {}),
         }
 
     def register(self, plugin):

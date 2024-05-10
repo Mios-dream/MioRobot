@@ -2,20 +2,58 @@
 
 ---
 
+<div align="center">
+
+![MioRobot](https://counter.seku.su/cmoe?name=miosdream&theme=r34)
+
+![os](https://img.shields.io/badge/os-win,linux,mac-orange?style=for-the-badge) ![python](https://img.shields.io/badge/python-3.7+-blue?style=for-the-badge) [![License](https://img.shields.io/badge/LICENSE-GPL_3.0-green.svg?style=for-the-badge)](./LICENSE)
+
+</div>
+
+<style>
+.light{
+    font-size: 50px;
+    color: #FFC0CB;
+    text-shadow: 0 0 0.5em #FFC0CB, 0 0 0.2em #FFC0CB;
+} 
+</style>
+<div class="light" align="center"><font face="楷体">“我愿用我最真挚的感情打动你的心灵”</font></div>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<style type="text/css">
+            .neon {
+        color: #cce7f8;
+        font-size: 2.5rem;
+        -webkit-animation: shining 0.5s alternate infinite;
+        animation: shining 0.5s alternate infinite;
+    }
+    @-webkit-keyframes shining {
+        from {
+            text-shadow: 0 0 10px lightblue, 0 0 20px lightblue, 0 0 30px lightblue, 0 0 40px skyblue, 0 0 50px skyblue, 0 0 60px skyblue;
+        }
+
+<table style="display: table; border-collapse: collapse; margin: auto; background-color:transparent;">
+<tbody><tr>
+<td style="vertical-align: top; color:#B2B7F2; font-size:36px; font-family:'Times New Roman',serif; font-weight:bold; text-align:left; padding:10px 10px; line-height:100%">“</td>
+    <td style="text-align: center; padding: 1em; vertical-align: middle;"><font face="楷体"><span style="color:#FFC0CB;"><b>请阁下一直喜欢澪哦！</b></span></font></td>
+<td style="vertical-align: bottom; color:#B2B7F2; font-size:36px; font-family:'Times New Roman',serif; font-weight:bold; text-align:left; padding:10px 10px; line-height:100%">”</td>
+</tr>
+</tbody></table>
+
 ## 概述
 
-编写的一个简单的 QQ 机器人处理消息的框架，可自定义插件
-遵循 onebot 标准
+一个简单的 QQ 机器人处理消息的框架，可自定义插件遵循 onebot 标准
 
 ## 环境
 
 - python=3.10
 
-
-
 ## 用法
 
-(可选)建议使用conda创建虚拟环境运行
+(可选)建议使用 conda 创建虚拟环境运行
 
 ```shell
 conda create -n mio_robot python=3.10
@@ -24,8 +62,6 @@ conda create -n mio_robot python=3.10
 ```shell
 conda activate mio_robot
 ```
-
-
 
 #### 第一步：
 
@@ -42,8 +78,6 @@ pip install -r requirements.txt
 ```bash
 python main.py
 ```
-
-
 
 ## 目录结构
 
@@ -74,136 +108,22 @@ Net	网络处理相关文件
    └─Receives.py	处理websocket请求
 ```
 
-
-
-
-
-
-
-
 ## 进阶
 
-### 插件编写
+- [1.插件编写](./src/md/plugin.md)
 
-所有插件都放在Plugin文件夹中
+## 其他
 
-插件的结构应为
+- [1.澪的介绍](./src/md/mio.md)
 
-```yaml
-Plugin	插件文件夹
-   ├─plugin_1	插件1
-   │   ├─__init__.py	初始化文件
-   │   └─other.py	其他文件
-   └─plugin_2	插件1
-      ├─__init__.py	初始化文件
-      └─other.py	其他文件
-```
+## 特别鸣谢
 
-所有的插件都必须包含 __ init __.py
+<div align="center">
+    <h3>
+--------------------感谢一路以来陪着我的朋友们---------------------
+    </h3>
+</div>
 
-测试插件示例
-
-```python
-from plugins import Plugin
-from DataType.GroupMassageData import GroupMassageData
-from Models.Api.MessageApi import MessageApi
-
-plugin = Plugin(
-    auther="三三",
-    name="简单的消息测试",
-    version="1.0",
-    description="简单的消息测试",
-    setting={
-        # 加载优先级,数字越大优先级越高
-        "priority": 0,
-        # 插件是否可用启用
-        "load": True,
-        # 插件回调地址，需要和后面的方法对应
-        "callback_name": "test",
-        # 是否阻止后续插件执行
-        "prevent_other_plugins": False,
-       	#监听事件的类型
-        "event": ["message"],
-    },
-)
-
-
-@plugin.register
-async def test(websocket: object, MessageData: GroupMassageData):
-
-    if MessageData.Message[0] == "测试":
- 
-        await MessageApi.sendGroupMessage(websocket,MessageData,"测试成功")
-```
-
-
-
-#### 流程
-
-1，首先我们需要导入插件的基类`Plugin`,并设置插件的基本信息
-
-```python
-from plugins import Plugin
-
-plugin = Plugin(
-    #作者
-    auther="三三",
-    #插件名
-    name="简单的消息测试",
-    #插件版本
-    version="1.0",
-    #插件描述
-    description="简单的消息测试",
-    setting={
-        # 加载优先级,数字越大优先级越高
-        "priority": 0,
-        # 插件是否可用启用
-        "load": True,
-        # 插件回调地址，需要和后面的方法对应
-        "callback_name": "test",
-        # 是否阻止后续插件执行
-        "prevent_other_plugins": False,
-       	#监听事件的类型
-        "event": ["message"],
-    },
-)
-```
-
-
-
-2，注册插件
-
-将`plugin.register`作为插件主体的装饰器，`test`即为插件的入口，和上面的`callback_name`对应
-
-插件的传参是固定的，不可以更改
-
-```python
-@plugin.register
-async def test(websocket: object, MessageData: GroupMassageData):
-```
-
-`async`关键字表示这个插件是异步的，插件的入口必须使用异步
-
-`websocket`为websocket连接对象，用于给消息api传参
-
-`MessageData`为上报信息，具体可以查看`GroupMassageData`中的内容
-
-
-
-3，发送简单的消息
-
-```python
-@plugin.register
-async def test(websocket: object, MessageData: GroupMassageData):
-    #如果上报消息为测试，则发送测试成功
-	if MessageData.Message[0] == "测试":
- 	await MessageApi.sendGroupMessage(websocket,MessageData,"测试成功")
-    
-```
-
-`MessageApi.sendGroupMessage()`是异步方法，需要通过`await`调用，详细传参请见`sendGroupMessage()`说明
-
-
-
-
-
+<a href="https://github.com/Mios-dream/MioRobot/contributors" target="_blank">
+  <img src="https://contrib.rocks/image?repo=Mios-dream/MioRobot" />
+</a>

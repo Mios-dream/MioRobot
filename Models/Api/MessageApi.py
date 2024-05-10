@@ -7,7 +7,7 @@ from log import Log
 
 class MessageApi:
 
-    def __init__(self, websocket) -> None:
+    def __init__(self) -> None:
         pass
 
     @staticmethod
@@ -54,21 +54,21 @@ class MessageApi:
             if isinstance(message, (str, int, float, bool)):
                 data["params"]["message"] = message
                 # 发送消息
-                replay = await websocket.send(json.dumps(data))
+                await websocket.send(json.dumps(data))
 
             # 判断message是否为列表
             elif all(isinstance(item, (str, int, float)) for item in message):
                 # 依次发送列表中的消息，间隔一秒
                 for item in message:
                     data["params"]["message"] = item
-                    replay = await websocket.send(json.dumps(data))
+                    await websocket.send(json.dumps(data))
                     await asyncio.sleep(1)
             # 判断message是否为字典
             elif all(isinstance(item, dict) for item in message):
                 # 发送字典中的消息，自定义时间间隔
                 for item in message:
                     data["params"]["message"] = item["message"]
-                    replay = await websocket.send(json.dumps(data))
+                    await websocket.send(json.dumps(data))
                     await asyncio.sleep(item.get("time", 1))
             else:
                 Log.error("发送的消息不符合规范")
@@ -84,27 +84,27 @@ class MessageApi:
                 messagedata["data"]["content"] = message
                 messagechains.append(messagedata)
                 data["params"]["message"] = messagechains
-                replay = await websocket.send(json.dumps(data))
+                await websocket.send(json.dumps(data))
             # 判断message是否为列表
             elif all(isinstance(item, (str, int, float)) for item in message):
 
                 for item in message:
                     messagedata["data"]["content"] = item
                     messagechains.append(messagedata)
-                replay = await websocket.send(json.dumps(data))
+                await websocket.send(json.dumps(data))
 
             else:
                 Log.error("发送的消息不符合规范")
 
-        if replay:
-            # 解析接口返回结果
-            replay = json.loads(replay)
+        # if replay:
+        #     # 解析接口返回结果
+        #     replay = json.loads(replay)
 
-            # 判断是否发送成功
-            if replay["retcode"] != 0:
-                Log.error(f"发送消息失败, 错误:{replay}")
-            # 返回接口结果
-            return replay
+        #     # 判断是否发送成功
+        #     if replay["retcode"] != 0:
+        #         Log.error(f"发送消息失败, 错误:{replay}")
+        #     # 返回接口结果
+        #     return replay
 
     @staticmethod
     async def sendPrivateMessage(
@@ -113,4 +113,4 @@ class MessageApi:
         message: Union[str, list, list[dict]],
         is_node: bool = False,
     ):
-        pass
+        raise NotImplementedError
