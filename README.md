@@ -10,31 +10,11 @@
 
 </div>
 
-<style>
-.light{
-    font-size: 50px;
-    color: #FFC0CB;
-    text-shadow: 0 0 0.5em #FFC0CB, 0 0 0.2em #FFC0CB;
-} 
-</style>
-<div class="light" align="center"><font face="楷体">“我愿用我最真挚的感情打动你的心灵”</font></div>
+<br>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<style type="text/css">
-            .neon {
-        color: #cce7f8;
-        font-size: 2.5rem;
-        -webkit-animation: shining 0.5s alternate infinite;
-        animation: shining 0.5s alternate infinite;
-    }
-    @-webkit-keyframes shining {
-        from {
-            text-shadow: 0 0 10px lightblue, 0 0 20px lightblue, 0 0 30px lightblue, 0 0 40px skyblue, 0 0 50px skyblue, 0 0 60px skyblue;
-        }
 
+<div align="center">
+<img src="src/md/assets/text.png" decoding="async" loading="lazy" width="1080" height="">
 <table style="display: table; border-collapse: collapse; margin: auto; background-color:transparent;">
 <tbody><tr>
 <td style="vertical-align: top; color:#B2B7F2; font-size:36px; font-family:'Times New Roman',serif; font-weight:bold; text-align:left; padding:10px 10px; line-height:100%">“</td>
@@ -42,6 +22,7 @@
 <td style="vertical-align: bottom; color:#B2B7F2; font-size:36px; font-family:'Times New Roman',serif; font-weight:bold; text-align:left; padding:10px 10px; line-height:100%">”</td>
 </tr>
 </tbody></table>
+</div>
 
 ## 概述
 
