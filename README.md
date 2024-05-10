@@ -14,6 +14,7 @@
 
 
 <div align="center">
+<img src="src/md/assets/text.png" decoding="async" loading="lazy" width="1080" height="">
 <table style="display: table; border-collapse: collapse; margin: auto; background-color:transparent;">
 <tbody><tr>
 <td style="vertical-align: top; color:#B2B7F2; font-size:36px; font-family:'Times New Roman',serif; font-weight:bold; text-align:left; padding:10px 10px; line-height:100%">“</td>
