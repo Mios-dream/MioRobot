@@ -8,6 +8,7 @@ from Plugin.photom_tank.PhotomTank import phantom_tank_from_url
 plugin = Plugin(
     auther="三三",
     name="幻影坦克",
+    display_name="幻影坦克",
     version="1.0",
     description="生成幻影坦克图片",
     setting={

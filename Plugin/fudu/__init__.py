@@ -8,6 +8,7 @@ import requests
 plugin = Plugin(
     auther="然飞 ranfey",
     name="主动复读",
+    display_name="主动复读",
     version="1.0",
     description="主动复读",
     setting={

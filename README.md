@@ -3,6 +3,7 @@
 ---
 
 <div align="center">
+[![QQGroup](https://img.shields.io/badge/点击加入我们-%E2%9D%A4-red?style=for-the-badge&labelColor=orange)](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=FgoIQ8GMNUtKrM8BytEMNV6iEbCUj06j&authKey=Z%2Bnd%2BhPQ5BTllW%2BZ13HBYnbmC81HD7XG9DZyXoEgcy55D4N6em%2B0zDC2Hsxjp3s9&noverify=0&group_code=676832751)
 
 ![MioRobot](https://counter.seku.su/cmoe?name=miosdream&theme=r34)
 
@@ -87,6 +88,13 @@ Models	必要模块
 
 Net	网络处理相关文件
    └─Receives.py	处理websocket请求
+
+log.py	日志类
+plugins.py	插件基类
+plugin_loader.py	插件加载器
+const.py	常量类
+init_config.py	初始化设置类
+main.py	主程序
 ```
 
 ## 进阶

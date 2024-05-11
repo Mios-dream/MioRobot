@@ -10,6 +10,7 @@ from wordcloud import WordCloud
 plugin = Plugin(
     auther="然飞 ranfey",
     name="生成词云",
+    display_name="生成词云",
     version="1.0",
     description="生成词云",
     setting={

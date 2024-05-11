@@ -10,6 +10,7 @@ plugin = Plugin(
     auther="然飞 ranfey",
     name="发病文学",
     version="1.0",
+    display_name="发病文学",
     description="发病文学",
     setting={
         # 加载优先级,数字越大优先级越高

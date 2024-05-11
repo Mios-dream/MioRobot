@@ -12,6 +12,7 @@ plugin = Plugin(
     name="图片超分",
     version="1.0",
     description="超分图片",
+    display_name="图片超分",
     setting={
         # 加载优先级,数字越大优先级越高
         "priority": 0,

@@ -9,6 +9,7 @@ from log import Log
 plugin = Plugin(
     auther="三三",
     name="插件重载插件",
+    display_name="插件重载",
     version="1.0",
     description="重载插件",
     setting={

@@ -11,6 +11,7 @@ plugin = Plugin(
     auther="三三",
     name="天气查询",
     version="1.0",
+    display_name="天气查询",
     description="天气查询",
     setting={
         # 加载优先级,数字越大优先级越高

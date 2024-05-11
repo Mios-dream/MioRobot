@@ -7,6 +7,7 @@ from DataType.CQcode import CQcode
 plugin = Plugin(
     auther="三三",
     name="菜单",
+    display_name="菜单",
     version="1.0",
     description="插件菜单",
     setting={
@@ -19,24 +20,13 @@ plugin = Plugin(
         # 是否阻止后续插件执行
         "prevent_other_plugins": False,
         "event": ["message"],
+        "is_hide": True,
     },
 )
-
-
-menu_data = """
-┍       菜单     ┐\r
-    🌸图片超分🌸\r
-    🌸幻影坦克🌸\r
-    🌸高考倒计时🌸\r
-└                       ┘\r
-=================\r
-"""
 
 
 @plugin.register
 async def menu(websocket: object, MessageData: GroupMassageData):
     if MessageData.Message[0] == "菜单":
         menu_data = Menu()
-        await MessageApi.sendGroupMessage(
-            websocket, MessageData, "插件列表\n" + menu_data.show_menu()
-        )
+        await MessageApi.sendGroupMessage(websocket, MessageData, menu_data.show_menu())

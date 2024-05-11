@@ -10,6 +10,7 @@ import random
 plugin = Plugin(
     auther="三三",
     name="澪的聊天插件",
+    display_name="澪的聊天",
     version="1.0",
     description="调用千问进行回复",
     setting={
@@ -22,6 +23,7 @@ plugin = Plugin(
         # 是否阻止后续插件执行
         "prevent_other_plugins": False,
         "event": ["message"],
+        "is_hide": False,
     },
 )
 

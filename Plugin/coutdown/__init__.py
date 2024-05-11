@@ -9,6 +9,7 @@ plugin = Plugin(
     auther="三三",
     name="高考倒计时",
     version="1.0",
+    display_name="高考倒计时",
     description="高考倒计时插件",
     setting={
         # 加载优先级,数字越大优先级越高
@@ -43,7 +44,7 @@ async def countdown(websocket: object, MessageData: GroupMassageData):
                 [f"距离高考还有{RemainingDays}天！", "“为世上所以美好而战”", "加油!"],
             ]
             await MessageApi.sendGroupMessage(
-                websocket, MessageData, random.choices(reply)[0]
+                websocket, MessageData, random.choice(reply)
             )
         elif RemainingDays > -3:
 
@@ -58,7 +59,7 @@ async def countdown(websocket: object, MessageData: GroupMassageData):
                 [f"距离高考还有{RemainingDays}天！", "“为世上所以美好而战”", "加油!"],
             ]
             await MessageApi.sendGroupMessage(
-                websocket, MessageData, random.choices(reply)
+                websocket, MessageData, random.choice(reply)
             )
 
         return 0

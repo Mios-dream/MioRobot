@@ -6,6 +6,7 @@ from plugin_loader import PluginLoaderControl
 plugin = Plugin(
     auther="三三",
     name="简单的消息测试",
+    display_name="测试",
     version="1.0",
     description="简单的消息测试",
     setting={
@@ -18,6 +19,8 @@ plugin = Plugin(
         # 是否阻止后续插件执行
         "prevent_other_plugins": False,
         "event": ["message"],
+        # 是否在菜单隐藏,为True时将不会在简易菜单中显示
+        "is_hide": True,
     },
 )
 
