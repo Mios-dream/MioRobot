@@ -7,7 +7,7 @@ colorama.init(autoreset=True)
 class Log:
     """
     简单的日志类
-    包含三个方法: infor, warning, error
+    包含五个方法: infor, warning, error,adapter,api_response
     """
 
     @staticmethod
@@ -39,3 +39,10 @@ class Log:
         输出收到的上报消息
         """
         print("\n上报消息:", msg)
+
+    @staticmethod
+    def api_response(msg) -> None:
+        """
+        输出API返回的消息
+        """
+        print(f"{colorama.Fore.GREEN}\nAPI返回消息:", msg)

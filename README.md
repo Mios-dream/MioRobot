@@ -104,6 +104,7 @@ main.py	主程序
 ## 其他
 
 - [1.澪的介绍](./src/md/mio.md)
+- [2.插件列表](./src/md/plugin_list.md)
 
 ## 特别鸣谢
 

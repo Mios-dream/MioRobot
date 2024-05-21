@@ -5,6 +5,7 @@ from DataType.MessageData import MessageData
 import traceback
 import sys
 import time
+import websockets
 
 
 class PluginLoader:
@@ -98,7 +99,7 @@ class PluginLoader:
                 tb = traceback.extract_tb(exc_traceback)
 
                 Log.error(
-                    f"加载插件 {plugin_name} 失败。\n行号：{tb[-1][1]}\n错误信息为: {e}"
+                    f"加载插件 {plugin_name} 失败。\n文件路径: {tb[-1].filename} \n行号：{tb[-1].lineno} \n错误源码:{traceback.format_exc()}\n错误信息为: {e}"
                 )
 
         # 将插件按照优先级排序
@@ -134,10 +135,16 @@ class PluginLoader:
 
         Log.info("重载成功")
 
-    async def call_back(self, websocket, Post_Type, data: MessageData) -> None:
+    async def call_back(
+        self,
+        websocket: websockets.WebSocketClientProtocol,
+        Post_Type: str,
+        data: MessageData,
+    ) -> None:
         """
         调用插件
         """
+
         # 统计插件调用的时间
         start_time = time.time()
         # 遍历插件回调函数对象字典
@@ -148,9 +155,9 @@ class PluginLoader:
                 plugin_name = plugin_model.plugin.name
                 # 获取回调函数名
                 callback_name = plugin_model.plugin.setting["callback_name"]
-
+                # 获取开发者设置
                 developer_setting = plugin_model.plugin.developer_setting
-
+                # 判断是否在插件的监听事件中
                 if Post_Type in plugin_model.plugin.setting["event"]:
 
                     # 记录插件运行时间
@@ -184,7 +191,7 @@ class PluginLoader:
                 tb = traceback.extract_tb(exc_traceback)
 
                 Log.error(
-                    f"调用插件 {plugin_name} 失败。\n行号：{tb[-1][1]} \n错误信息为: {e}"
+                    f"调用插件 {plugin_name} 失败。\n文件路径: {tb[-1].filename} \n行号：{tb[-1].lineno} \n错误源码:{traceback.format_exc()}\n错误信息为: {e}"
                 )
 
         # 统计插件调用的时间

@@ -1,6 +1,3 @@
-from DataType.GroupMassageData import GroupMassageData
-
-
 class GroupMessageEvent:
 
     def __init__(self, data: dict):

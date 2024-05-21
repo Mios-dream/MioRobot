@@ -3,6 +3,8 @@ from DataType.GroupMassageData import GroupMassageData
 import asyncio
 import json
 from log import Log
+import websockets
+from Models.Api.BaseApi import RequestApi, ApiAdapter
 
 
 class MessageApi:
@@ -12,7 +14,7 @@ class MessageApi:
 
     @staticmethod
     async def sendGroupMessage(
-        websocket: object,
+        websocket: websockets.WebSocketClientProtocol,
         MessageData: GroupMassageData,
         message: Union[str, list, list[dict]],
         is_node: bool = False,
@@ -38,38 +40,38 @@ class MessageApi:
         """
         # 实现发送消息的逻辑
         api = "send_group_msg" if not is_node else "send_group_forward_msg"
-        # 构建接口请求参数
-        data = {
-            "action": api,
-            "params": {
-                "group_id": MessageData.Group,
-                "message": "",
-                "auto_escape": False,
-            },
-            "echo": "",
-        }
+
         # 判断是否为转发消息
         if not is_node:
             # 判断message是否为字符串
             if isinstance(message, (str, int, float, bool)):
-                data["params"]["message"] = message
-                # 发送消息
-                await websocket.send(json.dumps(data))
+
+                param = {"message": message, "group_id": MessageData.Group}
+                args = RequestApi(api, param)
+                return await ApiAdapter.sendActionApi(websocket, args, 5)
 
             # 判断message是否为列表
             elif all(isinstance(item, (str, int, float)) for item in message):
                 # 依次发送列表中的消息，间隔一秒
                 for item in message:
-                    data["params"]["message"] = item
-                    await websocket.send(json.dumps(data))
+
+                    param = {"message": item, "group_id": MessageData.Group}
+                    args = RequestApi(api, param)
+                    response = await ApiAdapter.sendActionApi(websocket, args, 5)
+                    # 等待一秒，或许无用？
                     await asyncio.sleep(1)
+                return response
             # 判断message是否为字典
             elif all(isinstance(item, dict) for item in message):
                 # 发送字典中的消息，自定义时间间隔
                 for item in message:
-                    data["params"]["message"] = item["message"]
-                    await websocket.send(json.dumps(data))
+
+                    param = {"message": item["message"], "group_id": MessageData.Group}
+                    args = RequestApi(api, param)
+                    response = await ApiAdapter.sendActionApi(websocket, args, 5)
+                    # 等待一秒，或许无用？
                     await asyncio.sleep(item.get("time", 1))
+                return response
             else:
                 Log.error("发送的消息不符合规范")
         else:
@@ -83,28 +85,23 @@ class MessageApi:
             if isinstance(message, (str, int, float, bool)):
                 messagedata["data"]["content"] = message
                 messagechains.append(messagedata)
-                data["params"]["message"] = messagechains
-                await websocket.send(json.dumps(data))
+
+                param = {"message": messagechains, "group_id": MessageData.Group}
+                args = RequestApi(api, param)
+                return await ApiAdapter.sendActionApi(websocket, args, 5)
             # 判断message是否为列表
             elif all(isinstance(item, (str, int, float)) for item in message):
 
                 for item in message:
                     messagedata["data"]["content"] = item
                     messagechains.append(messagedata)
-                await websocket.send(json.dumps(data))
+                # await websocket.send(json.dumps(data))
+                param = {"message": messagechains, "group_id": MessageData.Group}
+                args = RequestApi(api, param)
+                return await ApiAdapter.sendActionApi(websocket, args, 5)
 
             else:
                 Log.error("发送的消息不符合规范")
-
-        # if replay:
-        #     # 解析接口返回结果
-        #     replay = json.loads(replay)
-
-        #     # 判断是否发送成功
-        #     if replay["retcode"] != 0:
-        #         Log.error(f"发送消息失败, 错误:{replay}")
-        #     # 返回接口结果
-        #     return replay
 
     @staticmethod
     async def sendPrivateMessage(
