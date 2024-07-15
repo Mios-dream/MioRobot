@@ -12,8 +12,8 @@ plugin = Plugin(
     auther="然飞 ranfey",
     name="zhwenhuo",
     version="1.0",
-    display_name="zhwenhuo",
-    description="zhwenhuo",
+    display_name="攻击性拉满",
+    description="攻击性拉满",
     setting={
         # 加载优先级,数字越大优先级越高
         "priority": 20,
