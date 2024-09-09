@@ -14,6 +14,8 @@ import getpass
 import platform
 import ast
 import astor
+from plugin_loader import PluginLoaderControl
+from group_control import GroupControl
 from pynvml import *
 
 
@@ -77,6 +79,8 @@ async def post_features(request: Request):
 
     with open("Cacha/group_list.json", "w", encoding="utf-8") as file:
         json.dump(group_data, file, ensure_ascii=False, indent=4)
+
+    await GroupControl._get_group_data()
     return {"message": "OK"}
 
 
@@ -237,29 +241,44 @@ async def get_Plugin_list():
     return plugin_list_r
 
 
-def update_setting_data(file_path, new_settings):
-    with open(file_path, "r") as file:
+class UpdateLoadValue(ast.NodeTransformer):
+    def __init__(self, new_load_value):
+        self.new_load_value = new_load_value
+        # 继承方法，实例化时载入参数
+
+    def visit_Assign(self, node):
+        # 确定正在访问的是 setting_data 变量
+        if (
+            isinstance(node.targets[0], ast.Name)
+            and node.targets[0].id == "setting_data"
+        ):
+            # 确定值是字典类型
+            if isinstance(node.value, ast.Dict):
+                for index, key in enumerate(node.value.keys):
+                    # 定位到 'load' 键
+                    if isinstance(key, ast.Str) and key.s == "load":
+                        # 更新 'load' 键的值
+                        node.value.values[index] = ast.NameConstant(
+                            value=self.new_load_value
+                        )
+        return node
+
+
+def update_setting_data(file_path, new_load_value):
+    with open(file_path, "r", encoding="utf-8") as file:
         source = file.read()
 
     tree = ast.parse(source)
 
-    class UpdateSettings(ast.NodeTransformer):
-        def visit_Assign(self, node):
-            if (
-                isinstance(node.targets[0], ast.Name)
-                and node.targets[0].id == "setting_data"
-            ):
-                new_dict = ast.literal_eval(node.value)
-                new_dict.update(new_settings)
-                node.value = ast.parse(str(new_dict)).body[0].value
-            return node
-
-    transformer = UpdateSettings()
+    # 使用自定义的 AST Transformer
+    transformer = UpdateLoadValue(new_load_value)
     transformer.visit(tree)
 
+    # 将修改后的 AST 转换回源代码
     updated_source = astor.to_source(tree)
 
-    with open(file_path, "w") as file:
+    # 将更新后的代码写回文件
+    with open(file_path, "w", encoding="utf-8") as file:
         file.write(updated_source)
 
 
@@ -270,8 +289,9 @@ async def post_Plugin_list(request: Request):
     """
     post_data = await request.json()
     callback_name_path = post_data.get("callback_name")
-    load = post_data.get("load")
-    module_path = f"Plugin/{callback_name_path}/__init__.py"
-    update_setting_data()
+    load_path = post_data.get("load")
 
-    return
+    module_path = f"Plugin/{callback_name_path}/__init__.py"
+    update_setting_data(module_path, load_path)
+    PluginLoaderControl.reload()
+    return {"message": "OK"}

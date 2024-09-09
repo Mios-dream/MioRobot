@@ -32,7 +32,6 @@ class GroupControl:
         """
         # 通过接口获取群数据
         row_group_data = await RobotInfo.get_group_list(GroupControl.websoket)
-
         GroupControl.update_group_data(row_group_data)
 
     @staticmethod

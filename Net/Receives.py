@@ -1,5 +1,4 @@
 import websockets
-import json
 import asyncio
 from init_config import Config
 from log import Log
@@ -11,8 +10,8 @@ import sys
 import time
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from Net.appHttp import appHttp
 import uvicorn
+from init_config import Config
 
 
 class OneBotReceive:
@@ -24,8 +23,6 @@ class OneBotReceive:
 
     plugin = None
 
-    GroupControlNew = None  ###
-
     def __init__(self, config: Config) -> None:
 
         self.config = config
@@ -36,7 +33,7 @@ class OneBotReceive:
             Log.info("websockets连接成功")
 
             # 初始化群管理类
-            GroupControlNew = GroupControl.init(self.Websocket)
+            GroupControl.init(self.Websocket)
 
             # 导入单例插件类
             self.plugin = PluginLoaderControl
@@ -106,3 +103,7 @@ class OneBotReceive:
                     Log.error(
                         f"插件处理流程出错\n文件路径: {tb[-1].filename} \n行号：{tb[-1].lineno} \n错误源码:{traceback.format_exc()}\n错误信息为: {e}"
                     )
+
+
+config = Config()
+recv = OneBotReceive(config)
