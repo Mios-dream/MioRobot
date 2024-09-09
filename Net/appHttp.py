@@ -12,6 +12,8 @@ import psutil
 import importlib.util
 import getpass
 import platform
+import ast
+import astor
 from pynvml import *
 
 
@@ -197,42 +199,79 @@ async def get_nvidia_gpu_utilization():
     return {"utilization": utilization}
 
 
-import importlib.util
-import json
-
-
-def load_modify_save(module_path, new_settings):
+def load_Plugin(module_path):
     # 动态加载模块
     spec = importlib.util.spec_from_file_location("module.name", module_path)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
 
-    # 获取原有设置
-    original_settings = module.plugin.setting
-
-    # 更新设置
-    original_settings.update(new_settings)
-
-    # 将更新后的设置写回文件（需要处理文件写入逻辑）
-    with open(module_path, "r") as file:
-        lines = file.readlines()
-
-    with open(module_path, "w") as file:
-        inside_setting = False
-        for line in lines:
-            if "setting={" in line:
-                inside_setting = True
-                file.write("    setting={\n")
-                for key, value in original_settings.items():
-                    file.write(f"        '{key}': {json.dumps(value)},\n")
-                continue
-            if inside_setting:
-                if "}," in line:
-                    file.write("    },\n")
-                    inside_setting = False
-                continue
-            file.write(line)
+    auther = (module.auther_data,)
+    name = (module.name_data,)
+    display_name = (module.display_name_data,)
+    version = (module.version_data,)
+    description = (module.description_data,)
+    setting = (module.setting_data,)
+    developer_setting = (module.developer_setting_data,)
+    return {
+        "setting": setting,
+        "author": auther,
+        "name": name,
+        "display_name": display_name,
+        "version": version,
+        "description": description,
+        "developer_setting": developer_setting,
+    }
 
 
-# 调用函数
-load_modify_save("path/to/plugin/__init__.py", {"load": False})
+@appHttp.get("/Plugin_list")
+async def get_Plugin_list():
+    """
+    插件列表
+    """
+    plugin_list = os.listdir("Plugin")
+    plugin_list_r = {}
+    for plugin_name in plugin_list:
+        module_path = f"Plugin/{plugin_name}/__init__.py"
+        plugin_list_r[plugin_name] = load_Plugin(module_path)
+
+    return plugin_list_r
+
+
+def update_setting_data(file_path, new_settings):
+    with open(file_path, "r") as file:
+        source = file.read()
+
+    tree = ast.parse(source)
+
+    class UpdateSettings(ast.NodeTransformer):
+        def visit_Assign(self, node):
+            if (
+                isinstance(node.targets[0], ast.Name)
+                and node.targets[0].id == "setting_data"
+            ):
+                new_dict = ast.literal_eval(node.value)
+                new_dict.update(new_settings)
+                node.value = ast.parse(str(new_dict)).body[0].value
+            return node
+
+    transformer = UpdateSettings()
+    transformer.visit(tree)
+
+    updated_source = astor.to_source(tree)
+
+    with open(file_path, "w") as file:
+        file.write(updated_source)
+
+
+@appHttp.post("/Plugin_list")
+async def post_Plugin_list(request: Request):
+    """
+    管理插件
+    """
+    post_data = await request.json()
+    callback_name_path = post_data.get("callback_name")
+    load = post_data.get("load")
+    module_path = f"Plugin/{callback_name_path}/__init__.py"
+    update_setting_data()
+
+    return

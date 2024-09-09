@@ -1,4 +1,4 @@
-from Plugin.ai_chat.emotion import emotion_recognition
+from Plugin.AiChat.emotion import emotion_recognition
 
 emotions = {
     "happy": {

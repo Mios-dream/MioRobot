@@ -5,7 +5,7 @@ from DataType.CQcode import CQcode
 from plugin_loader import PluginLoaderControl
 from log import Log
 
-setdata = {
+setting_data = {
     # 加载优先级,数字越大优先级越高
     "priority": 100,
     # 插件是否可用启用
@@ -16,14 +16,28 @@ setdata = {
     "prevent_other_plugins": False,
     "event": ["message"],
 }
+auther_data = "三三"
+name_data = "插件重载"
+display_name_data = "插件重载"
+version_data = "1.0"
+description_data = "重载插件"
+developer_setting_data = {
+    # 是否记录运行时间
+    "count_runtime": False,
+    # 运行时间阈值，超过则输出警告
+    "runtime_threshold": 0.5,
+    # 是否允许高时间消耗，如果为否，则会在运行时间过长时输出警告，警告时间默认为0.5秒
+    "allow_high_time_cost": False,
+}
 
 plugin = Plugin(
-    auther="三三",
-    name="插件重载插件",
-    display_name="插件重载",
-    version="1.0",
-    description="重载插件",
-    setting=setdata,
+    auther=auther_data,
+    name=name_data,
+    display_name=display_name_data,
+    version=version_data,
+    description=description_data,
+    setting=setting_data,
+    developer_setting=developer_setting_data,
 )
 
 
