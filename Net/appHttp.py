@@ -1,15 +1,18 @@
 from fastapi import FastAPI, HTTPException, Request
 from pydantic import BaseModel
 import uvicorn
-from flask import Flask, request
 from log import Log
-import asyncio
 import json
 import threading
 from init_config import Config
 from Crypto.Cipher import AES
 from Crypto.Random import get_random_bytes
 import base64
+import psutil
+import datetime
+import getpass
+import platform
+from pynvml import *
 
 
 # AES加密类
@@ -87,4 +90,105 @@ def run_api():
 async def modelModApi():
     thread = threading.Thread(target=run_api)
     thread.start()
-    return {"message": "Models.Api.modelModApi"}
+    return {"message": "OK"}
+
+
+@appHttp.get("/get_cpu_usage")
+async def get_cpu_usage():
+    """
+    获取总CPU使用率
+    """
+    usage = psutil.cpu_percent(interval=1)
+    return {"cpu_usage": usage}
+
+
+@appHttp.get("/get_free_memory")
+async def get_free_memory():
+    """
+    获取剩余内存（单位：GB）
+    """
+    virtual_memory = psutil.virtual_memory()
+    free_memory_gb = round(virtual_memory.free / (1024.0**3), 2)
+    return {"free_memory_gb": free_memory_gb}
+
+
+@appHttp.get("/get_memory_usage")
+async def get_memory_usage():
+    """
+    获取内存使用率
+    """
+    virtual_memory = psutil.virtual_memory()
+    memory_usage = round((virtual_memory.used / virtual_memory.total) * 100, 2)
+    return {"memory_usage": memory_usage}
+
+
+@appHttp.get("/get_system")
+async def get_username():
+    """
+    获取当前系统硬件信息
+    """
+    try:
+        nvmlInit()
+        nvidia_countt = nvmlDeviceGetName(nvmlDeviceGetHandleByIndex(0))
+    except NVMLError as _:
+        nvidia_countt = "No NVIDIA GPUs found"
+    finally:
+        try:
+            nvmlShutdown()
+        except:
+            pass
+    username = getpass.getuser()
+    u_name = platform.uname()
+    processor_name = platform.processor()
+    memory = int(round(psutil.virtual_memory().total, 2) / (1024.0**3))
+    time = psutil.boot_time()
+    return {
+        "username": username,
+        "system_name": u_name.system + u_name.version,
+        "gpu_name": nvidia_countt,
+        "system_memory": memory,
+        "cpu_model": processor_name,
+        "start_time": time,
+    }
+
+
+@appHttp.get("/get_nvidia_gpu_memory_usage")
+async def get_nvidia_gpu_memory_usage():
+    """
+    获取所有NVIDIA GPU的显存使用情况
+    """
+    try:
+        nvmlInit()
+        handle = nvmlDeviceGetHandleByIndex(0)
+        memory_info = nvmlDeviceGetMemoryInfo(handle)
+        used_memory_percentage = (
+            round((memory_info.used / memory_info.total) * 100, 2)
+            if memory_info.total > 0
+            else 0
+        )
+    except NVMLError as _:
+        used_memory_percentage = "No NVIDIA GPUs found"
+    finally:
+        try:
+            nvmlShutdown()
+        except:
+            pass
+    return {"memory_usage": used_memory_percentage}
+
+
+@appHttp.get("/get_nvidia_gpu_utilization")
+async def get_nvidia_gpu_utilization():
+    """
+    获取所有NVIDIA GPU的利用率
+    """
+    try:
+        nvmlInit()
+        handle = nvmlDeviceGetHandleByIndex(0)
+        utilization = nvmlDeviceGetUtilizationRates(handle).gpu
+    except NVMLError as _:
+        utilization = "No NVIDIA GPUs found"
+        try:
+            nvmlShutdown()
+        except:
+            pass
+    return {"utilization": utilization}
