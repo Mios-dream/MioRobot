@@ -7,7 +7,9 @@ async def main():
     # 初始化配置
     config = Config()
     recv = Receives.OneBotReceive(config)
-    await recv.Start()
+    httpStart = asyncio.create_task(recv.httpStart())
+    Start = asyncio.create_task(recv.Start())
+    await asyncio.gather(httpStart, Start)
 
 
 if __name__ == "__main__":

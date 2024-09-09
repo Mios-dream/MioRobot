@@ -56,6 +56,6 @@ def emotion_recognition(response):
 
 
 if __name__ == "__main__":
-    response = "早安阁下"
+    response = "早安老师"
     emotion = emotion_recognition(response)
     print(emotion)

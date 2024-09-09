@@ -7,6 +7,8 @@ import jieba
 from wordcloud import WordCloud
 import json
 import os
+import base64
+from io import BytesIO
 
 plugin = Plugin(
     auther="然飞 ranfey",
@@ -44,25 +46,41 @@ def newText(MessageData: GroupMassageData):
     data["message"] = str(MessageData.Message[0])
     data["QQid"] = MessageData.QQ
 
-    file = open(
-        "Plugin\\ciyun\\date\\" + MessageData.Group + ".json", "a+", encoding="utf-8"
-    )
-    if (
-        os.path.getsize("Plugin\\ciyun\\date\\" + MessageData.Group + ".json") == 0
-    ):  # 文件为空，写入数组
-        file.write(json.dumps([data], ensure_ascii=False, indent=4))
-    else:
-        file.close()
-        with open(
-            "Plugin\\ciyun\\date\\" + MessageData.Group + ".json",
-            "r+",
-            encoding="utf-8",
-        ) as file:
-            file.seek(-3, os.SEEK_END)
-            file.write(",\n" + json.dumps(data, ensure_ascii=False, indent=4) + "\n]")
+    filename = "Plugin\\ciyun\\date\\" + MessageData.Group + ".json"
+    mode = "r+" if os.path.exists(filename) and os.path.getsize(filename) > 0 else "w"
+
+    try:
+        with open(filename, mode, encoding="utf-8") as file:
+            if mode == "w":  # 如果是写入模式，意味着文件之前不存在或为空
+                json.dump([data], file, ensure_ascii=False, indent=4)
+            else:  # 文件已存在且非空，需要添加到现有数据
+                file.seek(0, os.SEEK_END)  # 移动到文件末尾
+                file.seek(
+                    file.tell() - 1, os.SEEK_SET
+                )  # 后退一位，覆盖最后的关闭方括号
+                file.write(",")  # 添加一个逗号
+                json.dump(data, file, ensure_ascii=False, indent=4)
+                file.write("]")  # 重新关闭数组
+    except Exception as e:
+        print(f"An error occurred: {e}")
 
 
 @plugin.register
 async def ciyun(websocket: object, MessageData: GroupMassageData):
     newText(MessageData)
-    print(MessageData.Group)
+    if "今日词云" in MessageData.Message[0]:
+        with open(
+            "Plugin\\ciyun\\date\\" + MessageData.Group + ".json", "r", encoding="utf-8"
+        ) as file:
+            data = json.load(file)
+        texts = [item["message"] for item in data]
+        txt = " ".join(texts)
+        # 使用 jieba 进行精确分词
+        words = jieba.lcut(txt)
+        # 使用空格拼接分词结果
+        newtxt = " ".join(words)
+        wordcloud = WordCloud(font_path="C:\\Windows\\Fonts\\msyh.ttf").generate(newtxt)
+        img_data = base64.b64encode(wordcloud.to_image()).decode()
+        await MessageApi.sendGroupMessage(
+            websocket, MessageData, CQcode.img(f"base64://{img_data}")
+        )

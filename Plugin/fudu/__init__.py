@@ -15,7 +15,7 @@ plugin = Plugin(
         # 加载优先级,数字越大优先级越高
         "priority": 100,
         # 插件是否可用启用
-        "load": True,
+        "load": False,
         # 插件回调地址
         "callback_name": "fudu",
         # 是否阻止其他插件执行

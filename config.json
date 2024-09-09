@@ -1,4 +1,5 @@
 {
     "websocket": "ws://localhost:5800",
-    "token": ""
+    "token": "",
+    "ManagePort":"40556"
 }
