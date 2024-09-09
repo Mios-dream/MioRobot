@@ -9,7 +9,7 @@ from Crypto.Cipher import AES
 from Crypto.Random import get_random_bytes
 import base64
 import psutil
-import datetime
+import importlib.util
 import getpass
 import platform
 from pynvml import *
@@ -142,6 +142,8 @@ async def get_username():
     processor_name = platform.processor()
     memory = int(round(psutil.virtual_memory().total, 2) / (1024.0**3))
     time = psutil.boot_time()
+    for disk_partition in psutil.disk_partitions():
+        o_usage = psutil.disk_usage(disk_partition.device)
     return {
         "username": username,
         "system_name": u_name.system + u_name.version,
@@ -149,6 +151,7 @@ async def get_username():
         "system_memory": memory,
         "cpu_model": processor_name,
         "start_time": time,
+        "eisk": int(o_usage.total / (1024.0**3)),
     }
 
 
@@ -192,3 +195,44 @@ async def get_nvidia_gpu_utilization():
         except:
             pass
     return {"utilization": utilization}
+
+
+import importlib.util
+import json
+
+
+def load_modify_save(module_path, new_settings):
+    # 动态加载模块
+    spec = importlib.util.spec_from_file_location("module.name", module_path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+
+    # 获取原有设置
+    original_settings = module.plugin.setting
+
+    # 更新设置
+    original_settings.update(new_settings)
+
+    # 将更新后的设置写回文件（需要处理文件写入逻辑）
+    with open(module_path, "r") as file:
+        lines = file.readlines()
+
+    with open(module_path, "w") as file:
+        inside_setting = False
+        for line in lines:
+            if "setting={" in line:
+                inside_setting = True
+                file.write("    setting={\n")
+                for key, value in original_settings.items():
+                    file.write(f"        '{key}': {json.dumps(value)},\n")
+                continue
+            if inside_setting:
+                if "}," in line:
+                    file.write("    },\n")
+                    inside_setting = False
+                continue
+            file.write(line)
+
+
+# 调用函数
+load_modify_save("path/to/plugin/__init__.py", {"load": False})

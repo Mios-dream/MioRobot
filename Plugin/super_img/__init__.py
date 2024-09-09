@@ -7,23 +7,25 @@ import base64
 import aiohttp
 import json
 
+setdata = {
+    # 加载优先级,数字越大优先级越高
+    "priority": 0,
+    # 插件是否可用启用
+    "load": True,
+    # 插件回调地址
+    "callback_name": "super_img",
+    # 是否阻止其他插件执行
+    "prevent_other_plugins": False,
+    "event": ["message"],
+}
+
 plugin = Plugin(
     auther="三三",
     name="图片超分",
     version="1.0",
     description="超分图片",
     display_name="图片超分",
-    setting={
-        # 加载优先级,数字越大优先级越高
-        "priority": 0,
-        # 插件是否可用启用
-        "load": True,
-        # 插件回调地址
-        "callback_name": "super_img",
-        # 是否阻止其他插件执行
-        "prevent_other_plugins": False,
-        "event": ["message"],
-    },
+    setting=setdata,
     developer_setting={
         # 允许高耗时操作
         "allow_high_time_cost": True,

@@ -6,23 +6,25 @@ import re
 import requests
 import json
 
+setdata = {
+    # 加载优先级,数字越大优先级越高
+    "priority": 20,
+    # 插件是否可用启用
+    "load": True,
+    # 插件回调地址
+    "callback_name": "fabing",
+    # 是否阻止其他插件执行
+    "prevent_other_plugins": False,
+    "event": ["message"],
+}
+
 plugin = Plugin(
     auther="然飞 ranfey",
     name="发病文学",
     version="1.0",
     display_name="发病文学",
     description="发病文学",
-    setting={
-        # 加载优先级,数字越大优先级越高
-        "priority": 20,
-        # 插件是否可用启用
-        "load": True,
-        # 插件回调地址
-        "callback_name": "fabing",
-        # 是否阻止其他插件执行
-        "prevent_other_plugins": False,
-        "event": ["message"],
-    },
+    setting=setdata,
 )
 
 

@@ -5,6 +5,17 @@ from DataType.CQcode import CQcode
 from plugin_loader import PluginLoaderControl
 from log import Log
 
+setdata = {
+    # 加载优先级,数字越大优先级越高
+    "priority": 100,
+    # 插件是否可用启用
+    "load": True,
+    # 插件回调地址
+    "callback_name": "Control",
+    # 是否阻止后续插件执行
+    "prevent_other_plugins": False,
+    "event": ["message"],
+}
 
 plugin = Plugin(
     auther="三三",
@@ -12,17 +23,7 @@ plugin = Plugin(
     display_name="插件重载",
     version="1.0",
     description="重载插件",
-    setting={
-        # 加载优先级,数字越大优先级越高
-        "priority": 100,
-        # 插件是否可用启用
-        "load": True,
-        # 插件回调地址
-        "callback_name": "Control",
-        # 是否阻止后续插件执行
-        "prevent_other_plugins": False,
-        "event": ["message"],
-    },
+    setting=setdata,
 )
 
 

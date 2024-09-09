@@ -4,6 +4,17 @@ from Models.Api.MessageApi import MessageApi
 from datetime import datetime
 import random
 
+setdata = {
+    # 加载优先级,数字越大优先级越高
+    "priority": 0,
+    # 插件是否可用启用
+    "load": True,
+    # 插件回调地址
+    "callback_name": "countdown",
+    # 是否阻止后续插件执行
+    "prevent_other_plugins": False,
+    "event": ["message"],
+}
 
 plugin = Plugin(
     auther="三三",
@@ -11,17 +22,7 @@ plugin = Plugin(
     version="1.0",
     display_name="高考倒计时",
     description="高考倒计时插件",
-    setting={
-        # 加载优先级,数字越大优先级越高
-        "priority": 0,
-        # 插件是否可用启用
-        "load": True,
-        # 插件回调地址
-        "callback_name": "countdown",
-        # 是否阻止后续插件执行
-        "prevent_other_plugins": False,
-        "event": ["message"],
-    },
+    setting=setdata,
 )
 
 

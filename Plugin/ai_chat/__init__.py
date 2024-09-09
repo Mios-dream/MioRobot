@@ -6,6 +6,18 @@ from Plugin.ai_chat.tts import tts_text
 from Plugin.ai_chat.fastchat import chat_fastapi
 import random
 
+setdata = {
+    # 加载优先级,数字越大优先级越高
+    "priority": 0,
+    # 插件是否可用启用
+    "load": True,
+    # 插件回调地址
+    "callback_name": "AiChat",
+    # 是否阻止后续插件执行
+    "prevent_other_plugins": False,
+    "event": ["message"],
+    "is_hide": False,
+}
 
 plugin = Plugin(
     auther="三三",
@@ -13,18 +25,7 @@ plugin = Plugin(
     display_name="澪的聊天",
     version="1.0",
     description="调用千问进行回复",
-    setting={
-        # 加载优先级,数字越大优先级越高
-        "priority": 0,
-        # 插件是否可用启用
-        "load": True,
-        # 插件回调地址
-        "callback_name": "AiChat",
-        # 是否阻止后续插件执行
-        "prevent_other_plugins": False,
-        "event": ["message"],
-        "is_hide": False,
-    },
+    setting=setdata,
 )
 
 

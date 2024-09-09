@@ -10,23 +10,25 @@ import os
 import base64
 from io import BytesIO
 
+setdata = {
+    # 加载优先级,数字越大优先级越高
+    "priority": 100,
+    # 插件是否可用启用
+    "load": False,
+    # 插件回调地址
+    "callback_name": "ciyun",
+    # 是否阻止其他插件执行
+    "prevent_other_plugins": False,
+    "event": ["message"],
+}
+
 plugin = Plugin(
     auther="然飞 ranfey",
     name="生成词云",
     display_name="生成词云",
     version="1.0",
     description="生成词云",
-    setting={
-        # 加载优先级,数字越大优先级越高
-        "priority": 100,
-        # 插件是否可用启用
-        "load": False,
-        # 插件回调地址
-        "callback_name": "ciyun",
-        # 是否阻止其他插件执行
-        "prevent_other_plugins": False,
-        "event": ["message"],
-    },
+    setting=setdata,
 )
 
 

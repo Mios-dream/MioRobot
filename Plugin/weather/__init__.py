@@ -6,6 +6,17 @@ from Plugin.weather.weather import Weather
 import base64
 import re
 
+setdata = {
+    # 加载优先级,数字越大优先级越高
+    "priority": 0,
+    # 插件是否可用启用
+    "load": True,
+    # 插件回调地址
+    "callback_name": "weather_forcast",
+    # 是否阻止后续插件执行
+    "prevent_other_plugins": False,
+    "event": ["message"],
+}
 
 plugin = Plugin(
     auther="三三",
@@ -13,17 +24,7 @@ plugin = Plugin(
     version="1.0",
     display_name="天气查询",
     description="天气查询",
-    setting={
-        # 加载优先级,数字越大优先级越高
-        "priority": 0,
-        # 插件是否可用启用
-        "load": True,
-        # 插件回调地址
-        "callback_name": "weather_forcast",
-        # 是否阻止后续插件执行
-        "prevent_other_plugins": False,
-        "event": ["message"],
-    },
+    setting=setdata,
 )
 
 

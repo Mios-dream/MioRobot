@@ -4,6 +4,17 @@ from Models.Api.MessageApi import MessageApi
 from DataType.CQcode import CQcode
 import requests
 
+setdata = {
+    # 加载优先级,数字越大优先级越高
+    "priority": 100,
+    # 插件是否可用启用
+    "load": False,
+    # 插件回调地址
+    "callback_name": "fudu",
+    # 是否阻止其他插件执行
+    "prevent_other_plugins": False,
+    "event": ["message"],
+}
 
 plugin = Plugin(
     auther="然飞 ranfey",
@@ -11,17 +22,7 @@ plugin = Plugin(
     display_name="主动复读",
     version="1.0",
     description="主动复读",
-    setting={
-        # 加载优先级,数字越大优先级越高
-        "priority": 100,
-        # 插件是否可用启用
-        "load": False,
-        # 插件回调地址
-        "callback_name": "fudu",
-        # 是否阻止其他插件执行
-        "prevent_other_plugins": False,
-        "event": ["message"],
-    },
+    setting=setdata,
 )
 
 
