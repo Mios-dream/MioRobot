@@ -82,9 +82,10 @@ def newText(MessageData: GroupMassageData):
 
 
 @plugin.register
-async def ciyun(websocket: object, MessageData: GroupMassageData):
+async def ciyun(websocket: object, MessageData: GroupMassageData, Trigger):
     newText(MessageData)
     if "今日词云" in MessageData.Message[0]:
+        Trigger.run()
         with open(
             "Plugin\\ciyun\\date\\" + MessageData.Group + ".json", "r", encoding="utf-8"
         ) as file:

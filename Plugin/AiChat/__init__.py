@@ -45,10 +45,11 @@ plugin = Plugin(
 
 
 @plugin.register
-async def AiChat(webscoket: object, MessageData: GroupMassageData) -> None:
+async def AiChat(websocket: object, MessageData: GroupMassageData, Trigger) -> None:
     # 以/开头为指令
     if MessageData.Message[0]:
         if MessageData.Message[0][0] == "/":
+            Trigger.run()
             # 调用fastchat进行回复
             response = await chat_fastapi(MessageData.Message[0][1:])
             # 回复语音的概率
@@ -58,14 +59,14 @@ async def AiChat(webscoket: object, MessageData: GroupMassageData) -> None:
                 random.random() >= random_num
             ):
                 await MessageApi.sendGroupMessage(
-                    webscoket, MessageData, f"{CQcode.at(MessageData.QQ)} {response}"
+                    websocket, MessageData, f"{CQcode.at(MessageData.QQ)} {response}"
                 ),
 
             else:
                 url = await tts_text(response)
 
                 await MessageApi.sendGroupMessage(
-                    webscoket, MessageData, CQcode.record(url)
+                    websocket, MessageData, CQcode.record(url)
                 )
             # 中断后续回复
             return 0
@@ -73,6 +74,7 @@ async def AiChat(webscoket: object, MessageData: GroupMassageData) -> None:
     # 以@机器人 为指令
     if MessageData.At:
         if MessageData.At[0] == MessageData.Robot:
+            Trigger.run()
 
             # 调用fastchat进行回复
             response = await chat_fastapi(MessageData.Message[0])
@@ -85,14 +87,14 @@ async def AiChat(webscoket: object, MessageData: GroupMassageData) -> None:
             ):
 
                 await MessageApi.sendGroupMessage(
-                    webscoket, MessageData, f"{CQcode.at(MessageData.QQ)} {response}"
+                    websocket, MessageData, f"{CQcode.at(MessageData.QQ)} {response}"
                 ),
 
             else:
                 url = await tts_text(response)
 
                 await MessageApi.sendGroupMessage(
-                    webscoket, MessageData, CQcode.record(url)
+                    websocket, MessageData, CQcode.record(url)
                 )
             # 中断后续回复
             return 0

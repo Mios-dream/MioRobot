@@ -41,9 +41,10 @@ plugin = Plugin(
 
 
 @plugin.register
-async def countdown(websocket: object, MessageData: GroupMassageData):
+async def countdown(websocket: object, MessageData: GroupMassageData, Trigger):
     # 开发者命令
     if MessageData.Message[0] == "高考倒计时":
+        Trigger.run()
         # 获取当前日期
         Today = datetime.now()
         year = Today.year

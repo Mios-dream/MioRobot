@@ -42,7 +42,8 @@ plugin = Plugin(
 
 
 @plugin.register
-async def menu(websocket: object, MessageData: GroupMassageData):
+async def menu(websocket: object, MessageData: GroupMassageData, Trigger):
     if MessageData.Message[0] == "菜单":
+        Trigger.run()
         menu_data = Menu()
         await MessageApi.sendGroupMessage(websocket, MessageData, menu_data.show_menu())

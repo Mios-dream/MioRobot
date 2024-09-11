@@ -61,7 +61,7 @@ def copyGroup(MessageData: str):
 
 
 @plugin.register
-async def fudu(websocket: object, MessageData: GroupMassageData):
+async def fudu(websocket: object, MessageData: GroupMassageData, Trigger):
     GroupTT = str(MessageData.Group)
     copyGroup(GroupTT)
     if (
@@ -71,6 +71,7 @@ async def fudu(websocket: object, MessageData: GroupMassageData):
         await MessageApi.sendGroupMessage(
             websocket, MessageData, MessageData.RowMessage
         )
+        Trigger.run()
         GroupClass[GroupTT].setFudu000()
     else:
         GroupClass[GroupTT].setFuduTemp(MessageData)

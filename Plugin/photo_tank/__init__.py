@@ -41,8 +41,10 @@ plugin = Plugin(
 
 
 @plugin.register
-async def photo_tank(websocket: object, MessageData: GroupMassageData):
+async def photo_tank(websocket: object, MessageData: GroupMassageData, Trigger):
     if MessageData.Message[0] == "幻影坦克":
+        Trigger.run()
+
         # 如果图片数量大于等于2
         if len(MessageData.Images) == 2:
 
@@ -63,6 +65,7 @@ async def photo_tank(websocket: object, MessageData: GroupMassageData):
         return 0
 
     if MessageData.Message[0] == "幻彩坦克":
+        Trigger.run()
         # 如果图片数量大于等于2
         if len(MessageData.Images) == 2:
             await MessageApi.sendGroupMessage(websocket, MessageData, "正在生成中...")

@@ -48,7 +48,7 @@ qqt = ""
 
 
 @plugin.register
-async def zhwenhuo(websocket: object, MessageData: GroupMassageData):
+async def zhwenhuo(websocket: object, MessageData: GroupMassageData, Trigger):
     bbb = random.randint(1, 3)
     if qqt in MessageData.QQ:
         words = jieba.lcut(MessageData.Message[0])
@@ -56,4 +56,5 @@ async def zhwenhuo(websocket: object, MessageData: GroupMassageData):
         word = words[ii]
         aaa = word + "?该闭嘴了"
         if bbb == 2:
+            Trigger.run()
             await MessageApi.sendGroupMessage(websocket, MessageData, aaa)

@@ -44,7 +44,7 @@ plugin = Plugin(
 
 
 @plugin.register
-async def super_img(websocket: object, MessageData: GroupMassageData):
+async def super_img(websocket: object, MessageData: GroupMassageData, Trigger):
     # 读取qq缓存
     with open("Plugin/super_img/cacha/cacha.json", "r+") as f:
         data = json.loads(f.read())
@@ -53,6 +53,7 @@ async def super_img(websocket: object, MessageData: GroupMassageData):
     QQ = str(MessageData.QQ)
 
     if MessageData.Message[0] == "图片超分":
+        Trigger.run()
         if running:
             await MessageApi.sendGroupMessage(
                 websocket, MessageData, "还有图片正在超分，请阁下再等一下吧"

@@ -43,17 +43,19 @@ plugin = Plugin(
 
 
 @plugin.register
-async def weather_forcast(websocket: object, MessageData: GroupMassageData):
+async def weather_forcast(websocket: object, MessageData: GroupMassageData, Trigger):
     data = re.search(r"^天气 (.*)", MessageData.Message[0])
     if data:
         img_data = Weather(data.group(1))
         if img_data.is_true_city:
             img_data = base64.b64encode(img_data.image()).decode()
+            Trigger.run()
 
             await MessageApi.sendGroupMessage(
                 websocket, MessageData, CQcode.img(f"base64://{img_data}")
             )
         else:
+            Trigger.run()
             await MessageApi.sendGroupMessage(
                 websocket,
                 MessageData,

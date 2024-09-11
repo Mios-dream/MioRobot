@@ -16,7 +16,9 @@ import ast
 import astor
 from plugin_loader import PluginLoaderControl
 from group_control import GroupControl
+from Models.Api.BaseApi import RequestApi, ApiAdapter
 from pynvml import *
+from Net.Receives import recv
 
 
 # AES加密类
@@ -59,8 +61,41 @@ class AESCipher:
 appHttp = FastAPI()
 
 
+@appHttp.get("/bot_info")
+async def bot_info():
+    """
+    获取bot账号信息
+    """
+    api = "get_login_info"
+    param = {0: 0}
+    args = RequestApi(api, param)
+    iii = await ApiAdapter.sendActionApi(recv.Websocket, args, 5)
+    return iii["data"]
+
+
+@appHttp.get("/plugin_error_list")
+async def plugin_error_list():
+    """
+    获取插件报错记录
+    """
+    return Log.plugin_error_list
+
+
+@appHttp.post("/plugin_trigger_list")
+async def plugin_trigger_list(request: Request):
+    """
+    获取插件触发记录（时间戳）
+    """
+    post_data = await request.json()
+    callback_name = post_data.get("callback_name")
+    return {callback_name: PluginLoaderControl.trigger_list[callback_name].runtime}
+
+
 @appHttp.get("/group_list")
 async def get_features():
+    """
+    获取群列表
+    """
     with open("Cacha\group_list.json", "r", encoding="utf-8") as file:
         group_data = json.load(file)
     return group_data
@@ -68,6 +103,9 @@ async def get_features():
 
 @appHttp.post("/group_list")
 async def post_features(request: Request):
+    """
+    修改群启用
+    """
     with open("Cacha\group_list.json", "r", encoding="utf-8") as file:
         group_data = json.load(file)
     post_data = await request.json()
@@ -94,6 +132,9 @@ def run_api():
 
 @appHttp.get("/modelModApi")
 async def modelModApi():
+    """
+    运行模型
+    """
     thread = threading.Thread(target=run_api)
     thread.start()
     return {"message": "OK"}

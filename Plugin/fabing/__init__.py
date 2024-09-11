@@ -68,8 +68,9 @@ def fetch_url_content(name):
 
 
 @plugin.register
-async def fabing(websocket: object, MessageData: GroupMassageData):
+async def fabing(websocket: object, MessageData: GroupMassageData, Trigger):
     if "!!" in MessageData.Message[0] or "！！" in MessageData.Message[0]:
+        Trigger.run()
         name = remove_exclamation_marks(MessageData.Message[0])
         aaa = str(fetch_url_content(name))
         await MessageApi.sendGroupMessage(websocket, MessageData, aaa)

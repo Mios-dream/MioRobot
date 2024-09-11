@@ -42,13 +42,14 @@ plugin = Plugin(
 
 
 @plugin.register
-async def Control(webscoket: object, MessageData: GroupMassageData) -> None:
+async def Control(websocket: object, MessageData: GroupMassageData, Trigger) -> None:
     # 开发者命令
     if MessageData.Message[0] == "#重载":
+        Trigger.run()
         try:
 
             PluginLoaderControl.reload()
-            await MessageApi.sendGroupMessage(webscoket, MessageData, "重载完成啦！")
+            await MessageApi.sendGroupMessage(websocket, MessageData, "重载完成啦！")
             return 0
 
         except Exception as e:

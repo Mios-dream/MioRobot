@@ -43,9 +43,10 @@ chi = "飞公主"
 
 
 @plugin.register
-async def pingbici(websocket: object, MessageData: GroupMassageData):
+async def pingbici(websocket: object, MessageData: GroupMassageData, Trigger):
     # 开发者命令
     if chi in MessageData.Message[0]:
+        Trigger.run()
         api = "delete_msg"
         param = {"message_id": MessageData.Message_ID}
         args = RequestApi(api, param)
