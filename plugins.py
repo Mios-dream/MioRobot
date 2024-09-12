@@ -1,3 +1,6 @@
+from typing import Callable
+
+
 class Plugin:
     """
     插件基类
@@ -52,7 +55,7 @@ class Plugin:
             **info.get("developer_setting", {}),
         }
 
-    def register(self, plugin):
+    def register(self, plugin: Callable) -> Callable:
         # 注册插件
 
         def wrapper(*args, **kwargs):

@@ -12,12 +12,12 @@ class Config:
 
         # self.__dict__ = json_data
 
-        self._set_data(json_data)
+        self.__set_data(json_data)
 
     def __str__(self):
         return str(self.__dict__)
 
-    def _set_data(self, json_data):
+    def __set_data(self, json_data):
         # websocket配置信息
         self.Websocket = "{0}/?access_token={1}".format(
             json_data["websocket"], json_data["token"]

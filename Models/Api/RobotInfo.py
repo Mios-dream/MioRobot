@@ -1,5 +1,6 @@
 import websockets
 from Models.Api.BaseApi import RequestApi, ApiAdapter
+import json
 
 
 class RobotInfo:
@@ -12,7 +13,7 @@ class RobotInfo:
         raise NotImplementedError
 
     @staticmethod
-    async def get_group_list(websocket: websockets.WebSocketClientProtocol):
+    async def get_group_list(websocket: websockets.WebSocketClientProtocol) -> str:
 
         param = {"no_cache": False}
         args = RequestApi("get_group_list", param)

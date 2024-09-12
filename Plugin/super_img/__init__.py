@@ -41,6 +41,11 @@ async def super_img(websocket: object, MessageData: GroupMassageData):
     QQ = str(MessageData.QQ)
 
     if MessageData.Message[0] == "图片超分":
+        await MessageApi.sendGroupMessage(
+            websocket, MessageData, "发送超分图片，然后再发送图片就可以超分图片啦"
+        )
+
+    if MessageData.Message[0] == "超分图片":
         if running:
             await MessageApi.sendGroupMessage(
                 websocket, MessageData, "还有图片正在超分，请阁下再等一下吧"

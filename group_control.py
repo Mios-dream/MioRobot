@@ -22,10 +22,10 @@ class GroupControl:
         GroupControl.websoket = websoket
 
         loop = asyncio.get_event_loop()
-        task = loop.create_task(GroupControl._get_group_data())
+        task = loop.create_task(GroupControl.__get_group_data())
 
     @staticmethod
-    async def _get_group_data():
+    async def __get_group_data():
         """
         获取群数据
         :return: 群数据

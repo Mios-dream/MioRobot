@@ -1,4 +1,5 @@
 import re
+from deprecated import deprecated
 
 
 class CQcode:
@@ -61,6 +62,7 @@ class CQcode:
         return f"[CQ:weather,city={city}]"
 
     @staticmethod
+    @deprecated(version="1.0", reason="这个方法暂不支持，不要使用")
     def music(type, id):
         """
         type: 163 网易云音乐 qq QQ音乐

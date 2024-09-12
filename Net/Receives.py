@@ -17,12 +17,16 @@ class OneBotReceive:
 
     plugin = None
 
-    def __init__(self, config: Config) -> None:
+    def __init__(self, config: Config):
 
         self.config = config
 
     async def Start(self):
+        """
+        启动ws连接
+        """
         try:
+            Log.info("websockets连接中...")
             self.Websocket = await websockets.connect(self.config.Websocket)
             Log.info("websockets连接成功")
 
@@ -33,8 +37,9 @@ class OneBotReceive:
             self.plugin = PluginLoaderControl
             # 调用插件的初始化方法
             self.plugin.loading()
-
+            # 调用接受方法
             await self.Receive()
+
         except Exception as e:
             exc_type, exc_value, exc_traceback = sys.exc_info()
             tb = traceback.extract_tb(exc_traceback)
@@ -48,27 +53,31 @@ class OneBotReceive:
             await self.Start()
 
     async def Receive(self):
+        """
+        接收消息
+        """
         while True:
             # 接收消息
             context = await self.Websocket.recv()
             # 判断是否为空
-            if not context.isspace():
+            if context.isspace():
+                continue
 
-                # 处理消息
-                MessageData = EventAdapter.EventContral(context)
+            # 处理消息
+            MessageData = EventAdapter.EventContral(context)
 
-                try:
-                    if MessageData:
+            try:
+                if MessageData:
 
-                        # 调用插件的接收方法
-                        await self.plugin.call_back(
-                            self.Websocket, MessageData.Post_Type, MessageData
-                        )
-
-                except Exception as e:
-                    exc_type, exc_value, exc_traceback = sys.exc_info()
-                    tb = traceback.extract_tb(exc_traceback)
-
-                    Log.error(
-                        f"插件处理流程出错\n文件路径: {tb[-1].filename} \n行号：{tb[-1].lineno} \n错误源码:{traceback.format_exc()}\n错误信息为: {e}"
+                    # 调用插件的接收方法
+                    await self.plugin.call_back(
+                        self.Websocket, MessageData.Post_Type, MessageData
                     )
+
+            except Exception as e:
+                exc_type, exc_value, exc_traceback = sys.exc_info()
+                tb = traceback.extract_tb(exc_traceback)
+
+                Log.error(
+                    f"插件处理流程出错\n文件路径: {tb[-1].filename} \n行号：{tb[-1].lineno} \n错误源码:{traceback.format_exc()}\n错误信息为: {e}"
+                )

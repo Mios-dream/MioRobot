@@ -3,6 +3,8 @@ from DataType.GroupMassageData import GroupMassageData
 from Models.Api.MessageApi import MessageApi
 from DataType.CQcode import CQcode
 from Plugin.photom_tank.PhotomTank import phantom_tank_from_url
+import websockets
+from Plugin.menu.TextMenu import TextMenu
 
 
 plugin = Plugin(
@@ -26,8 +28,15 @@ plugin = Plugin(
 
 
 @plugin.register
-async def photo_tank(websocket: object, MessageData: GroupMassageData):
+async def photo_tank(
+    websocket: websockets.WebSocketClientProtocol, MessageData: GroupMassageData
+):
+
     if MessageData.Message[0] == "幻影坦克":
+        data = TextMenu(["生成幻影坦克", "生成幻彩坦克"], add_yiyan=False)
+        await MessageApi.sendGroupMessage(websocket, MessageData, data.show_menu())
+
+    if MessageData.Message[0] == "生成幻影坦克":
         # 如果图片数量大于等于2
         if len(MessageData.Images) == 2:
 
@@ -36,6 +45,7 @@ async def photo_tank(websocket: object, MessageData: GroupMassageData):
             imagedata = await phantom_tank_from_url(
                 MessageData.Images[0], MessageData.Images[1]
             )
+
             # 发送图片
             await MessageApi.sendGroupMessage(
                 websocket, MessageData, CQcode.img(f"base64://{imagedata}")
@@ -47,7 +57,7 @@ async def photo_tank(websocket: object, MessageData: GroupMassageData):
         # 中断后续回复
         return 0
 
-    if MessageData.Message[0] == "幻彩坦克":
+    if MessageData.Message[0] == "生成幻彩坦克":
         # 如果图片数量大于等于2
         if len(MessageData.Images) == 2:
             await MessageApi.sendGroupMessage(websocket, MessageData, "正在生成中...")

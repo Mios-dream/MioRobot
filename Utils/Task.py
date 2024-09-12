@@ -2,6 +2,10 @@ import asyncio
 
 
 class Task:
+    """
+    用于异步任务处理
+    """
+
     def __init__(self, guid) -> None:
         # 为任务设置唯一标识符
         self.echo = guid

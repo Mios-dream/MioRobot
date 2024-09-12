@@ -17,7 +17,9 @@ class EventAdapter:
     OnNext = []
 
     @staticmethod
-    def EventContral(data: str) -> Union[GroupMassageData, PrivateMessageData]:
+    def EventContral(
+        data: str,
+    ) -> Union[None, GroupMassageData, PrivateMessageData]:
 
         try:
             # 用于处理api返回的json数据

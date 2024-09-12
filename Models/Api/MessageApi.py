@@ -18,7 +18,7 @@ class MessageApi:
         MessageData: GroupMassageData,
         message: Union[str, list, list[dict]],
         is_node: bool = False,
-    ):
+    ) -> str:
         """
         发送群消息
         @param websocket: websocket对象
@@ -45,7 +45,7 @@ class MessageApi:
         if not is_node:
             # 判断message是否为字符串
             if isinstance(message, (str, int, float, bool)):
-
+                # 构建消息
                 param = {"message": message, "group_id": MessageData.Group}
                 args = RequestApi(api, param)
                 return await ApiAdapter.sendActionApi(websocket, args, 5)
@@ -54,7 +54,7 @@ class MessageApi:
             elif all(isinstance(item, (str, int, float)) for item in message):
                 # 依次发送列表中的消息，间隔一秒
                 for item in message:
-
+                    # 构建消息
                     param = {"message": item, "group_id": MessageData.Group}
                     args = RequestApi(api, param)
                     response = await ApiAdapter.sendActionApi(websocket, args, 5)
@@ -65,7 +65,7 @@ class MessageApi:
             elif all(isinstance(item, dict) for item in message):
                 # 发送字典中的消息，自定义时间间隔
                 for item in message:
-
+                    # 构建消息
                     param = {"message": item["message"], "group_id": MessageData.Group}
                     args = RequestApi(api, param)
                     response = await ApiAdapter.sendActionApi(websocket, args, 5)
@@ -85,7 +85,7 @@ class MessageApi:
             if isinstance(message, (str, int, float, bool)):
                 messagedata["data"]["content"] = message
                 messagechains.append(messagedata)
-
+                # 构建消息
                 param = {"message": messagechains, "group_id": MessageData.Group}
                 args = RequestApi(api, param)
                 return await ApiAdapter.sendActionApi(websocket, args, 5)
@@ -95,7 +95,7 @@ class MessageApi:
                 for item in message:
                     messagedata["data"]["content"] = item
                     messagechains.append(messagedata)
-                # await websocket.send(json.dumps(data))
+                # 构建消息
                 param = {"message": messagechains, "group_id": MessageData.Group}
                 args = RequestApi(api, param)
                 return await ApiAdapter.sendActionApi(websocket, args, 5)

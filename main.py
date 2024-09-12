@@ -1,4 +1,5 @@
 from Net import Receives
+from log import Log
 import asyncio
 from init_config import Config
 
@@ -11,5 +12,5 @@ async def main():
 
 
 if __name__ == "__main__":
-    print("启动机器人")
+    Log.info("正在启动澪...")
     asyncio.run(main())

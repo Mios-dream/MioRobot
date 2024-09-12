@@ -67,7 +67,6 @@ async def chat_fastapi(
                 response = await res.json()
 
     except Exception as e:
-        print(f"【{content}】信息回复异常")
         return "澪不知道该如何回答...."
 
     assistant_message = response["choices"][0]["message"]["content"]

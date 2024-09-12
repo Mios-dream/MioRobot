@@ -11,14 +11,14 @@ class Log:
     """
 
     @staticmethod
-    def info(msg) -> None:
+    def info(msg: str) -> None:
         """
         输出普通信息
         """
         print(f"{colorama.Fore.GREEN}\n信息:{msg}")
 
     @staticmethod
-    def warning(msg) -> None:
+    def warning(msg: str) -> None:
         """
         输出警告信息
         """
@@ -26,7 +26,7 @@ class Log:
         print(f"{colorama.Fore.YELLOW}\n警告:{msg}")
 
     @staticmethod
-    def error(msg) -> None:
+    def error(msg: str) -> None:
         """
         输出错误信息
         """
@@ -34,14 +34,14 @@ class Log:
         print(f"{colorama.Fore.RED}\n错误:{msg}")
 
     @staticmethod
-    def adapter(msg) -> None:
+    def adapter(msg: str) -> None:
         """
         输出收到的上报消息
         """
         print("\n上报消息:", msg)
 
     @staticmethod
-    def api_response(msg) -> None:
+    def api_response(msg: str) -> None:
         """
         输出API返回的消息
         """

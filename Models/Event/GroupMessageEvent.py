@@ -45,12 +45,11 @@ class GroupMessageEvent:
 
         # 对原始格式化消息数据进行解析，传入便捷消息
         if self.MessageData is not None:
-            for self.MessageDataCacha in self.MessageData:
+            for MessageDataCacha in self.MessageData:
                 # 文字消息
-                if self.MessageDataCacha.get("type", None) == "text":
-                    self.Message.append(
-                        self.MessageDataCacha.get("data").get("text", None)
-                    )
+                if MessageDataCacha.get("type", None) == "text":
+                    self.Message.append(MessageDataCacha.get("data").get("text", None))
+                    continue
                 # 图片消息
                 # 原始图片
                 # if self.MessageDataCacha.get("type", None) == "image":
@@ -59,23 +58,20 @@ class GroupMessageEvent:
                 #     )
 
                 # 替换图床链接后的图片，这只是一个临时方案
-                if self.MessageDataCacha.get("type", None) == "image":
+                if MessageDataCacha.get("type", None) == "image":
                     self.Images.append(
-                        self.MessageDataCacha.get("data")
+                        MessageDataCacha.get("data")
                         .get("url", None)
                         .replace(
                             "https://multimedia.nt.qq.com.cn/", "https://gchat.qpic.cn/"
                         )
                     )
+                    continue
 
                 # At消息
-                if self.MessageDataCacha.get("type", None) == "at":
-                    self.At.append(
-                        str(self.MessageDataCacha.get("data").get("qq", None))
-                    )
-
-            # 删除原始格式化消息数据缓存
-            del self.MessageDataCacha
+                if MessageDataCacha.get("type", None) == "at":
+                    self.At.append(str(MessageDataCacha.get("data").get("qq", None)))
+                    continue
 
         if not self.Message:
             self.Message.append("")

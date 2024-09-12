@@ -66,6 +66,7 @@ class Weather:
             self.is_true_city = False
 
         else:
+            self.city = data[1]
             web_page = requests.get(
                 f"https://weather.cma.cn/web/weather/{data[0]}.html"
             )

@@ -29,6 +29,14 @@ plugin = Plugin(
 
 @plugin.register
 async def weather_forcast(websocket: object, MessageData: GroupMassageData):
+
+    if MessageData.Message[0] == "天气查询":
+        await MessageApi.sendGroupMessage(
+            websocket,
+            MessageData,
+            "只要发送\n天气 <城市名>\n即可查询阁下城市的天气啦！",
+        )
+
     data = re.search(r"^天气 (.*)", MessageData.Message[0])
     if data:
         img_data = Weather(data.group(1))
