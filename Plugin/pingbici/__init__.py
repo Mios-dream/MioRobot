@@ -1,9 +1,8 @@
 from plugins import Plugin
 from DataType.GroupMassageData import GroupMassageData
 from Models.Api.MessageApi import MessageApi
+from Models.Api.BaseApi import RequestApi, ApiAdapter
 from DataType.CQcode import CQcode
-from plugin_loader import PluginLoaderControl
-from log import Log
 
 setting_data = {
     # 加载优先级,数字越大优先级越高
@@ -11,16 +10,16 @@ setting_data = {
     # 插件是否可用启用
     "load": True,
     # 插件回调地址
-    "callback_name": "Control",
+    "callback_name": "pingbici",
     # 是否阻止后续插件执行
     "prevent_other_plugins": False,
     "event": ["message"],
 }
-auther_data = "三三"
-name_data = "插件重载"
-display_name_data = "插件重载"
+auther_data = "ranfey"
+name_data = "屏蔽词"
+display_name_data = "屏蔽词"
 version_data = "1.0"
-description_data = "重载插件"
+description_data = "屏蔽词"
 developer_setting_data = {
     # 是否记录运行时间
     "count_runtime": False,
@@ -40,17 +39,15 @@ plugin = Plugin(
     developer_setting=developer_setting_data,
 )
 
+chi = "飞公主"
+
 
 @plugin.register
-async def Control(websocket: object, MessageData: GroupMassageData, Trigger) -> None:
+async def pingbici(websocket: object, MessageData: GroupMassageData, Trigger):
     # 开发者命令
-    if MessageData.Message[0] == "#重载":
+    if chi in MessageData.Message[0]:
         Trigger.run()
-        try:
-
-            PluginLoaderControl.reload()
-            await MessageApi.sendGroupMessage(websocket, MessageData, "重载完成啦！")
-            return 0
-
-        except Exception as e:
-            Log.error(f"重载失败,错误信息：{e}")
+        api = "delete_msg"
+        param = {"message_id": MessageData.Message_ID}
+        args = RequestApi(api, param)
+        await ApiAdapter.sendActionApi(websocket, args, 5)

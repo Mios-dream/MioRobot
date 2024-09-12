@@ -52,7 +52,7 @@ plugin = Plugin(
 
 
 @plugin.register
-async def test(websocket: object, MessageData: GroupMassageData):
+async def test(websocket: object, MessageData: GroupMassageData, Trigger):
 
     if MessageData.Message[0] == "测试":
  
@@ -102,7 +102,7 @@ plugin = Plugin(
 
 ```python
 @plugin.register
-async def test(websocket: object, MessageData: GroupMassageData):
+async def test(websocket: object, MessageData: GroupMassageData, Trigger):
 ```
 
 `async`关键字表示这个插件是异步的，插件的入口必须使用异步
@@ -117,7 +117,7 @@ async def test(websocket: object, MessageData: GroupMassageData):
 
 ```python
 @plugin.register
-async def test(websocket: object, MessageData: GroupMassageData):
+async def test(websocket: object, MessageData: GroupMassageData, Trigger):
     #如果上报消息为测试，则发送测试成功
     if MessageData.Message[0] == "测试":
     await MessageApi.sendGroupMessage(websocket,MessageData,"测试成功")
@@ -125,3 +125,6 @@ async def test(websocket: object, MessageData: GroupMassageData):
 ```
 
 `MessageApi.sendGroupMessage()`是异步方法，需要通过`await`调用，详细传参请见`sendGroupMessage()`说明
+
+
+使用Trigger.run来标记插件是否运行

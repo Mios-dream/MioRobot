@@ -36,7 +36,7 @@ class GroupMassageData(MessageData):
     # 群消息类型
     Group_Message_Type: str
     # 消息ID
-    Message_ID: str
+    Message_ID: int
     # 原始消息，即带CQ码的消息
     RowMessage: str
 

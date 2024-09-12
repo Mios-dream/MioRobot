@@ -48,6 +48,7 @@ class ApiAdapter:
             obj = await asyncio.wait_for(task.fut, timeout=timeOut)
             return obj
         except asyncio.TimeoutError:
+            print("api请求超时")
             # 请求超时
             return None
         finally:

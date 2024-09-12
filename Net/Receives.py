@@ -1,5 +1,5 @@
 import websockets
-import json
+import asyncio
 from init_config import Config
 from log import Log
 from Models.Event.EventContral import EventAdapter
@@ -8,11 +8,17 @@ import traceback
 from plugin_loader import PluginLoaderControl
 import sys
 import time
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+import uvicorn
+from init_config import Config
 
 
 class OneBotReceive:
     """
     ws连接
+
+    appHttp连接
     """
 
     plugin = None
@@ -52,6 +58,31 @@ class OneBotReceive:
             time.sleep(10)
             await self.Start()
 
+    async def httpStart(self):
+        try:
+            loop = asyncio.get_running_loop()
+            await loop.run_in_executor(
+                None,
+                lambda: uvicorn.run(
+                    "Net.appHttp:appHttp",
+                    host="0.0.0.0",
+                    port=int(self.config.UvicornPort),
+                    reload=False,
+                ),
+            )
+
+        except Exception as e:
+            exc_type, exc_value, exc_traceback = sys.exc_info()
+            tb = traceback.extract_tb(exc_traceback)
+            # 查看详细错误信息
+            # Log.error(
+            #     f"ws连接错误\n文件路径: {tb[-1].filename} \n行号：{tb[-1].lineno} \n错误源码:{traceback.format_exc()}\n错误信息为: {e}"
+            # )
+            Log.error("http管理开启失败，请检查配置")
+            Log.info("将在10秒后尝试重新连接")
+            time.sleep(10)
+            await self.httpStart()
+
     async def Receive(self):
         """
         接收消息
@@ -81,3 +112,7 @@ class OneBotReceive:
                 Log.error(
                     f"插件处理流程出错\n文件路径: {tb[-1].filename} \n行号：{tb[-1].lineno} \n错误源码:{traceback.format_exc()}\n错误信息为: {e}"
                 )
+
+
+config = Config()
+recv = OneBotReceive(config)

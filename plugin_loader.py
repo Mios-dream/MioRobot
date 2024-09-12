@@ -5,7 +5,23 @@ from DataType.MessageData import MessageData
 import traceback
 import sys
 import time
+import inspect
 import websockets
+
+
+class Plugin_trigger:
+    """
+    标记插件的触发
+    """
+
+    callback_name: str
+    runtime = []
+
+    def __init__(self, callback_name):
+        self.callback_name = callback_name
+
+    def run(self):
+        self.runtime.append(time.time())
 
 
 class PluginLoader:
@@ -24,6 +40,9 @@ class PluginLoader:
 
     # 加载的插件数量
     plugin_num = 0
+
+    # 触发记录对象列表
+    trigger_list = {}
 
     # 性能警告阈值,单位为秒
     performance_warning_threshold = 1
@@ -60,11 +79,12 @@ class PluginLoader:
             try:
                 # 导入模块
                 plugin_model = reload(import_module(f"Plugin.{plugin_name}"))
-
                 # 获取优先级
                 priority = plugin_model.plugin.setting["priority"]
                 # 获取回调函数名
                 callback_name = plugin_model.plugin.setting["callback_name"]
+
+                self.trigger_list[callback_name] = Plugin_trigger(callback_name)
 
                 # 检查是否开启插件
                 if not plugin_model.plugin.setting["load"]:
@@ -73,15 +93,17 @@ class PluginLoader:
 
                 # 检查是否存在回调函数
                 if not hasattr(plugin_model, callback_name):
-                    Log.error(
-                        f"在加载({plugin_name})时，发现回调函数{callback_name}不存在，请检查回调函数名"
+                    Log.plugin_error(
+                        plugin_name,
+                        f"在加载({plugin_name})时，发现回调函数{callback_name}不存在，请检查回调函数名",
                     )
                     continue
 
                 # 检查是否重复
                 if plugin_name in self.plugin_name_list:
-                    Log.error(
-                        f"在加载{plugin_name}时，发现重复的回调函数名{callback_name},请修改回调函数名,确保其唯一"
+                    Log.plugin_error(
+                        plugin_name,
+                        f"在加载{plugin_name}时，发现重复的回调函数名{callback_name},请修改回调函数名,确保其唯一",
                     )
                     continue
 
@@ -98,8 +120,9 @@ class PluginLoader:
                 exc_type, exc_value, exc_traceback = sys.exc_info()
                 tb = traceback.extract_tb(exc_traceback)
 
-                Log.error(
-                    f"加载插件 {plugin_name} 失败。\n文件路径: {tb[-1].filename} \n行号：{tb[-1].lineno} \n错误源码:{traceback.format_exc()}\n错误信息为: {e}"
+                Log.plugin_error(
+                    plugin_name,
+                    f"加载插件 {plugin_name} 失败。\n文件路径: {tb[-1].filename} \n行号：{tb[-1].lineno} \n错误源码:{traceback.format_exc()}\n错误信息为: {e}",
                 )
 
         # 将插件按照优先级排序
@@ -166,7 +189,9 @@ class PluginLoader:
 
                     # 调用插件
                     callback = eval(f"plugin_model.{callback_name}")
-                    code = await callback(websocket, data)
+                    code = await callback(
+                        websocket, data, self.trigger_list[callback_name]
+                    )
 
                     # 记录插件运行时间
                     if developer_setting["count_runtime"]:
@@ -190,8 +215,9 @@ class PluginLoader:
                 exc_type, exc_value, exc_traceback = sys.exc_info()
                 tb = traceback.extract_tb(exc_traceback)
 
-                Log.error(
-                    f"调用插件 {plugin_name} 失败。\n文件路径: {tb[-1].filename} \n行号：{tb[-1].lineno} \n错误源码:{traceback.format_exc()}\n错误信息为: {e}"
+                Log.plugin_error(
+                    plugin_name,
+                    f"调用插件 {plugin_name} 失败。\n文件路径: {tb[-1].filename} \n行号：{tb[-1].lineno} \n错误源码:{traceback.format_exc()}\n错误信息为: {e}",
                 )
 
         # 统计插件调用的时间

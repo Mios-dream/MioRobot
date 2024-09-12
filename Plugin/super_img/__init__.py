@@ -7,32 +7,44 @@ import base64
 import aiohttp
 import json
 
+setting_data = {
+    # 加载优先级,数字越大优先级越高
+    "priority": 0,
+    # 插件是否可用启用
+    "load": True,
+    # 插件回调地址
+    "callback_name": "super_img",
+    # 是否阻止其他插件执行
+    "prevent_other_plugins": False,
+    "event": ["message"],
+}
+auther_data = "三三"
+name_data = "图片超分"
+display_name_data = "图片超分"
+version_data = "1.0"
+description_data = "图片超分"
+developer_setting_data = {
+    # 是否记录运行时间
+    "count_runtime": False,
+    # 运行时间阈值，超过则输出警告
+    "runtime_threshold": 0.5,
+    # 是否允许高时间消耗，如果为否，则会在运行时间过长时输出警告，警告时间默认为0.5秒
+    "allow_high_time_cost": True,
+}
+
 plugin = Plugin(
-    auther="三三",
-    name="图片超分",
-    version="1.0",
-    description="超分图片",
-    display_name="图片超分",
-    setting={
-        # 加载优先级,数字越大优先级越高
-        "priority": 0,
-        # 插件是否可用启用
-        "load": True,
-        # 插件回调地址
-        "callback_name": "super_img",
-        # 是否阻止其他插件执行
-        "prevent_other_plugins": False,
-        "event": ["message"],
-    },
-    developer_setting={
-        # 允许高耗时操作
-        "allow_high_time_cost": True,
-    },
+    auther=auther_data,
+    name=name_data,
+    display_name=display_name_data,
+    version=version_data,
+    description=description_data,
+    setting=setting_data,
+    developer_setting=developer_setting_data,
 )
 
 
 @plugin.register
-async def super_img(websocket: object, MessageData: GroupMassageData):
+async def super_img(websocket: object, MessageData: GroupMassageData, Trigger):
     # 读取qq缓存
     with open("Plugin/super_img/cacha/cacha.json", "r+") as f:
         data = json.loads(f.read())
@@ -41,6 +53,7 @@ async def super_img(websocket: object, MessageData: GroupMassageData):
     QQ = str(MessageData.QQ)
 
     if MessageData.Message[0] == "图片超分":
+        Trigger.run()
         await MessageApi.sendGroupMessage(
             websocket, MessageData, "发送超分图片，然后再发送图片就可以超分图片啦"
         )
