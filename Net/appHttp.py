@@ -19,6 +19,7 @@ from group_control import GroupControl
 from Models.Api.BaseApi import RequestApi, ApiAdapter
 from pynvml import *
 from Net.Receives import recv
+import os
 
 
 # AES加密类
@@ -118,7 +119,7 @@ async def post_features(request: Request):
     with open("Cacha/group_list.json", "w", encoding="utf-8") as file:
         json.dump(group_data, file, ensure_ascii=False, indent=4)
 
-    await GroupControl._get_group_data()
+    await GroupControl.get_group_data()
     return {"message": "OK"}
 
 
@@ -245,27 +246,49 @@ async def get_nvidia_gpu_utilization():
 
 
 def load_Plugin(module_path):
-    # 动态加载模块
-    spec = importlib.util.spec_from_file_location("module.name", module_path)
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
+    try:
+        # 检查文件是否存在
+        if not os.path.exists(module_path):
+            raise FileNotFoundError(f"模块文件未找到: {module_path}")
 
-    auther = (module.auther_data,)
-    name = (module.name_data,)
-    display_name = (module.display_name_data,)
-    version = (module.version_data,)
-    description = (module.description_data,)
-    setting = (module.setting_data,)
-    developer_setting = (module.developer_setting_data,)
-    return {
-        "setting": setting,
-        "author": auther,
-        "name": name,
-        "display_name": display_name,
-        "version": version,
-        "description": description,
-        "developer_setting": developer_setting,
-    }
+        # 动态加载模块
+        spec = importlib.util.spec_from_file_location("module.name", module_path)
+        if spec is None:
+            raise ImportError(f"无法创建模块spec: {module_path}")
+
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+
+        # 获取模块中的数据属性
+        auther = getattr(module, "auther_data", "未提供作者信息")
+        name = getattr(module, "name_data", "未提供名称")
+        display_name = getattr(module, "display_name_data", "未提供显示名称")
+        version = getattr(module, "version_data", "未提供版本号")
+        description = getattr(module, "description_data", "未提供描述")
+        setting = getattr(module, "setting_data", "未提供设置信息")
+        developer_setting = getattr(
+            module, "developer_setting_data", "未提供开发者设置信息"
+        )
+
+        return {
+            "setting": setting,
+            "author": auther,
+            "name": name,
+            "display_name": display_name,
+            "version": version,
+            "description": description,
+            "developer_setting": developer_setting,
+        }
+
+    except FileNotFoundError as fnf_error:
+        print(f"文件错误: {fnf_error}")
+    except ImportError as import_error:
+        print(f"导入错误: {import_error}")
+    except AttributeError as attr_error:
+        print(f"属性错误: {attr_error}")
+    except Exception as e:
+        print(f"发生未知错误: {e}")
+    return None  # 如果出错返回None或其他合适的值
 
 
 @appHttp.get("/Plugin_list")
