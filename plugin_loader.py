@@ -207,8 +207,18 @@ class PluginLoader:
                                 f"插件({plugin_name})运行耗时: {runtime}秒,性能较低，请检查插件!"
                             )
 
-                    # 判断检查是否需要中断其他插件
+                    # 判断检查，是否有插件返回了非0的状态码
+                    # 0为触发，1为未触发，-1为插件错误
                     if code == 0:
+                        # 触发并中断后续插件的调用
+                        Log.info(f"插件({plugin_name})触发成功")
+                        break
+                    elif code == -1:
+                        # 插件错误
+                        Log.plugin_error(
+                            plugin_name,
+                            f"插件({plugin_name})触发失败,插件内部错误",
+                        )
                         break
 
             except Exception as e:

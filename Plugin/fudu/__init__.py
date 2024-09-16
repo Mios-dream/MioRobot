@@ -8,7 +8,7 @@ setting_data = {
     # 加载优先级,数字越大优先级越高
     "priority": 100,
     # 插件是否可用启用
-    "load": False,
+    "load": True,
     # 插件回调地址
     "callback_name": "fudu",
     # 是否阻止其他插件执行
