@@ -11,3 +11,6 @@ colorama
 imageio
 wordcloud
 realesrgan
+astor
+pynvml
+jieba
