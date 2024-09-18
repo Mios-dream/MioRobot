@@ -10,3 +10,7 @@ websockets==12.0
 colorama
 imageio
 wordcloud
+realesrgan
+astor
+pynvml
+jieba
