@@ -1,5 +1,5 @@
 {
-    "websocket": "ws://localhost:2333",
+    "websocket": "",
     "token": "",
-    "ManagePort": "40556"
+    "ManagePort": ""
 }
