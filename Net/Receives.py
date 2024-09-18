@@ -60,6 +60,7 @@ class OneBotReceive:
 
     async def httpStart(self):
         try:
+            Log.info("正在开启api服务......")
             loop = asyncio.get_running_loop()
             await loop.run_in_executor(
                 None,
