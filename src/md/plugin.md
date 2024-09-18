@@ -32,7 +32,7 @@ from DataType.GroupMassageData import GroupMassageData
 from Models.Api.MessageApi import MessageApi
 
 plugin = Plugin(
-    auther="三三",
+    author="三三",
     name="简单的消息测试",
     version="1.0",
     description="简单的消息测试",
@@ -70,7 +70,7 @@ from plugins import Plugin
 
 plugin = Plugin(
     #作者
-    auther="三三",
+    author="三三",
     #插件名
     name="简单的消息测试",
     #插件版本

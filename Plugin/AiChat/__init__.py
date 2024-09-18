@@ -18,7 +18,7 @@ setting_data = {
     "event": ["message"],
     "is_hide": False,
 }
-auther_data = "三三"
+author_data = "三三"
 name_data = "澪的聊天插件"
 display_name_data = "澪的聊天"
 version_data = "1.0"
@@ -34,7 +34,7 @@ developer_setting_data = {
 
 
 plugin = Plugin(
-    auther=auther_data,
+    author=author_data,
     name=name_data,
     display_name=display_name_data,
     version=version_data,

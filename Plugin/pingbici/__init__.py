@@ -15,7 +15,7 @@ setting_data = {
     "prevent_other_plugins": False,
     "event": ["message"],
 }
-auther_data = "ranfey"
+author_data = "ranfey"
 name_data = "屏蔽词"
 display_name_data = "屏蔽词"
 version_data = "1.0"
@@ -30,7 +30,7 @@ developer_setting_data = {
 }
 
 plugin = Plugin(
-    auther=auther_data,
+    author=author_data,
     name=name_data,
     display_name=display_name_data,
     version=version_data,

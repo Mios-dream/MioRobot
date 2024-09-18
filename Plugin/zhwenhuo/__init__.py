@@ -19,7 +19,7 @@ setting_data = {
     "prevent_other_plugins": False,
     "event": ["message"],
 }
-auther_data = "然飞 ranfey"
+author_data = "然飞 ranfey"
 name_data = "zhwenhuo"
 display_name_data = "攻击性拉满"
 version_data = "1.0"
@@ -34,7 +34,7 @@ developer_setting_data = {
 }
 
 plugin = Plugin(
-    auther=auther_data,
+    author=author_data,
     name=name_data,
     display_name=display_name_data,
     version=version_data,

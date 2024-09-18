@@ -11,7 +11,7 @@ setting_data = {
     "event": ["message"],
     "is_hide": True,
 }
-auther_data = "三三"
+author_data = "三三"
 name_data = "简单的消息测试"
 display_name_data = "测试"
 version_data = "1.0"
@@ -22,7 +22,7 @@ developer_setting_data = {
     "allow_high_time_cost": False,
 }
 plugin = Plugin(
-    auther=auther_data,
+    author=author_data,
     name=name_data,
     display_name=display_name_data,
     version=version_data,

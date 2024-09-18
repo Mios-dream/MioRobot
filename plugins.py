@@ -7,7 +7,7 @@ class Plugin:
     """
 
     # 作者
-    auther = None
+    author = None
     # 插件名称
     name = None
     # 插件展示名称，用于简易菜单展示
@@ -43,7 +43,7 @@ class Plugin:
 
     def __init__(self, **info):
         # 初始化插件信息
-        self.auther = info.get("auther")
+        self.author = info.get("author")
         self.name = info.get("name")
         self.version = info.get("version")
         self.description = info.get("description")

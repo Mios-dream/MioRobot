@@ -260,7 +260,7 @@ def load_Plugin(module_path):
         spec.loader.exec_module(module)
 
         # 获取模块中的数据属性
-        auther = getattr(module, "auther_data", "未提供作者信息")
+        author = getattr(module, "author_data", "未提供作者信息")
         name = getattr(module, "name_data", "未提供名称")
         display_name = getattr(module, "display_name_data", "未提供显示名称")
         version = getattr(module, "version_data", "未提供版本号")
@@ -272,7 +272,7 @@ def load_Plugin(module_path):
 
         return {
             "setting": setting,
-            "auther": auther,
+            "author": author,
             "name": name,
             "display_name": display_name,
             "version": version,
@@ -314,10 +314,10 @@ async def get_plugin_list():
 
 #         if (
 #             isinstance(node.targets[0], ast.Name)
-#             and node.targets[0].id == "auther_data"
+#             and node.targets[0].id == "author_data"
 #         ):
 #             if isinstance(node.value, ast.Str):
-#                 node.value = ast.Str(s=self.new_load_value["auther"])
+#                 node.value = ast.Str(s=self.new_load_value["author"])
 #         if isinstance(node.targets[0], ast.Name) and node.targets[0].id == "name_data":
 #             if isinstance(node.value, ast.Str):
 #                 node.value = ast.Str(s=self.new_load_value["name"])
