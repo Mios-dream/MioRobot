@@ -5,8 +5,8 @@ from log import Log
 import json
 import threading
 from init_config import Config
-from Crypto.Cipher import AES
-from Crypto.Random import get_random_bytes
+from Cryptodome.Cipher import AES
+from Cryptodome.Random import get_random_bytes
 import base64
 import psutil
 import importlib.util
@@ -272,7 +272,7 @@ def load_Plugin(module_path):
 
         return {
             "setting": setting,
-            "author": auther,
+            "auther": auther,
             "name": name,
             "display_name": display_name,
             "version": version,
@@ -291,8 +291,8 @@ def load_Plugin(module_path):
     return None  # 如果出错返回None或其他合适的值
 
 
-@appHttp.get("/Plugin_list")
-async def get_Plugin_list():
+@appHttp.get("/plugin_list")
+async def get_plugin_list():
     """
     插件列表
     """
@@ -305,57 +305,206 @@ async def get_Plugin_list():
     return plugin_list_r
 
 
+# class UpdateLoadValue(ast.NodeTransformer):
+#     def __init__(self, new_load_value):
+#         self.new_load_value = new_load_value
+#         # 继承方法，实例化时载入参数
+
+#     def visit_Assign(self, node):
+
+#         if (
+#             isinstance(node.targets[0], ast.Name)
+#             and node.targets[0].id == "auther_data"
+#         ):
+#             if isinstance(node.value, ast.Str):
+#                 node.value = ast.Str(s=self.new_load_value["auther"])
+#         if isinstance(node.targets[0], ast.Name) and node.targets[0].id == "name_data":
+#             if isinstance(node.value, ast.Str):
+#                 node.value = ast.Str(s=self.new_load_value["name"])
+#         if (
+#             isinstance(node.targets[0], ast.Name)
+#             and node.targets[0].id == "display_name_data"
+#         ):
+#             if isinstance(node.value, ast.Str):
+#                 node.value = ast.Str(s=self.new_load_value["display_name"])
+#         if (
+#             isinstance(node.targets[0], ast.Name)
+#             and node.targets[0].id == "version_data"
+#         ):
+#             if isinstance(node.value, ast.Str):
+#                 node.value = ast.Str(s=self.new_load_value["version"])
+#         if (
+#             isinstance(node.targets[0], ast.Name)
+#             and node.targets[0].id == "description_data"
+#         ):
+#             if isinstance(node.value, ast.Str):
+#                 node.value = ast.Str(s=self.new_load_value["description"])
+#         if (
+#             isinstance(node.targets[0], ast.Name)
+#             and node.targets[0].id == "developer_setting_data"
+#         ):
+#             if isinstance(node.value, ast.Dict):
+#                 # 提取字典数据
+#                 setting_dict = self.new_load_value["developer_setting"]
+#                 # 创建 AST 字典节点
+#                 keys = [ast.Str(s=str(key)) for key in setting_dict.keys()]
+#                 values = [
+#                     (
+#                         ast.Str(s=str(value))
+#                         if isinstance(value, str)
+#                         else (
+#                             ast.Num(n=value)
+#                             if isinstance(value, (int, float))
+#                             else (
+#                                 ast.NameConstant(value=value)
+#                                 if isinstance(value, (bool, type(None)))
+#                                 else (
+#                                     ast.List(
+#                                         elts=[ast.Str(s=item) for item in value],
+#                                         ctx=ast.Load(),
+#                                     )
+#                                     if isinstance(value, list)
+#                                     else ast.Name(id=str(value))
+#                                 )
+#                             )
+#                         )
+#                     )  # 其他类型暂时使用 Name 作为占位
+#                     for value in setting_dict.values()
+#                 ]
+#                 node.value = ast.Dict(keys=keys, values=values)
+
+#         if (
+#             isinstance(node.targets[0], ast.Name)
+#             and node.targets[0].id == "setting_data"
+#         ):
+#             if isinstance(node.value, ast.Dict):
+#                 # 提取字典数据
+#                 setting_dict = self.new_load_value["setting"]
+#                 # 创建 AST 字典节点
+#                 keys = [ast.Str(s=str(key)) for key in setting_dict.keys()]
+#                 values = [
+#                     (
+#                         ast.Str(s=str(value))
+#                         if isinstance(value, str)
+#                         else (
+#                             ast.Num(n=value)
+#                             if isinstance(value, (int, float))
+#                             else (
+#                                 ast.NameConstant(value=value)
+#                                 if isinstance(value, (bool, type(None)))
+#                                 else (
+#                                     ast.List(
+#                                         elts=[ast.Str(s=item) for item in value],
+#                                         ctx=ast.Load(),
+#                                     )
+#                                     if isinstance(value, list)
+#                                     else ast.Name(id=str(value))
+#                                 )
+#                             )
+#                         )
+#                     )  # 其他类型暂时使用 Name 作为占位
+#                     for value in setting_dict.values()
+#                 ]
+#                 node.value = ast.Dict(keys=keys, values=values)
+
+#         return node
+
+
+# def update_setting_data(file_path, new_setting_data_value):
+#     with open(file_path, "r", encoding="utf-8") as file:
+#         source = file.read()
+
+#     tree = ast.parse(source)
+
+#     # 使用自定义的 AST Transformer
+#     transformer = UpdateLoadValue(new_setting_data_value)
+
+#     transformer.visit(tree)
+
+#     # 将修改后的 AST 转换回源代码
+#     updated_source = astor.to_source(tree)
+
+#     # 将更新后的代码写回文件
+#     with open(file_path, "w", encoding="utf-8") as file:
+#         file.write(updated_source)
+
+
 class UpdateLoadValue(ast.NodeTransformer):
     def __init__(self, new_load_value):
         self.new_load_value = new_load_value
-        # 继承方法，实例化时载入参数
 
     def visit_Assign(self, node):
-        # 确定正在访问的是 setting_data 变量
-        if (
-            isinstance(node.targets[0], ast.Name)
-            and node.targets[0].id == "setting_data"
-        ):
-            # 确定值是字典类型
-            if isinstance(node.value, ast.Dict):
-                for index, key in enumerate(node.value.keys):
-                    # 定位到 'load' 键
-                    if isinstance(key, ast.Str) and key.s == "load":
-                        # 更新 'load' 键的值
-                        node.value.values[index] = ast.NameConstant(
-                            value=self.new_load_value
-                        )
+        if not node.targets:
+            return node
+
+        target = node.targets[0]
+        if isinstance(target, ast.Name):
+            target_id = target.id
+
+            # Mapping of variable names to keys in new_load_value
+            key_map = {
+                "author_data": "author",
+                "name_data": "name",
+                "display_name_data": "display_name",
+                "version_data": "version",
+                "description_data": "description",
+                "developer_setting_data": "developer_setting",
+                "setting_data": "setting",
+            }
+
+            if target_id in key_map:
+                key = key_map[target_id]
+                new_value = self.new_load_value.get(key)
+
+                if new_value is not None:
+                    # Convert new_value to appropriate AST node
+                    node.value = self.value_to_ast_node(new_value)
         return node
 
+    def value_to_ast_node(self, value):
+        """Convert a Python value to the corresponding AST node."""
+        if isinstance(value, (str, int, float, bool, type(None))):
+            return ast.Constant(value=value)
+        elif isinstance(value, dict):
+            keys = [self.value_to_ast_node(k) for k in value.keys()]
+            values = [self.value_to_ast_node(v) for v in value.values()]
+            return ast.Dict(keys=keys, values=values)
+        elif isinstance(value, list):
+            elts = [self.value_to_ast_node(v) for v in value]
+            return ast.List(elts=elts, ctx=ast.Load())
+        else:
+            raise ValueError(f"Unsupported value type: {type(value)}")
 
-def update_setting_data(file_path, new_load_value):
+
+def update_setting_data(file_path, new_setting_data_value):
     with open(file_path, "r", encoding="utf-8") as file:
         source = file.read()
 
     tree = ast.parse(source)
 
-    # 使用自定义的 AST Transformer
-    transformer = UpdateLoadValue(new_load_value)
+    transformer = UpdateLoadValue(new_setting_data_value)
     transformer.visit(tree)
+    ast.fix_missing_locations(tree)
 
-    # 将修改后的 AST 转换回源代码
-    updated_source = astor.to_source(tree)
+    try:
+        updated_source = ast.unparse(tree)  # Python 3.9+后使用
+    except AttributeError:
+        updated_source = astor.to_source(tree)
 
-    # 将更新后的代码写回文件
     with open(file_path, "w", encoding="utf-8") as file:
         file.write(updated_source)
 
 
-@appHttp.post("/Plugin_list")
-async def post_Plugin_list(request: Request):
+@appHttp.post("/plugin_list")
+async def post_plugin_list(request: Request):
     """
     管理插件
     """
     post_data = await request.json()
     callback_name_path = post_data.get("callback_name")
-    load_path = post_data.get("load")
+    setting_data_path = post_data.get("setting_data")
 
     module_path = f"Plugin/{callback_name_path}/__init__.py"
-    update_setting_data(module_path, load_path)
+    update_setting_data(module_path, setting_data_path)
     PluginLoaderControl.reload()
     return {"message": "OK"}
