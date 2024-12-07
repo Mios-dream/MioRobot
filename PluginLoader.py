@@ -1,11 +1,11 @@
 import os
 from importlib import import_module, reload
-from log import Log
+from typing import Any
+from Utils.Logs import Log
 from DataType.MessageData import MessageData
 import traceback
 import sys
 import time
-import inspect
 import websockets
 
 
@@ -14,11 +14,11 @@ class Plugin_trigger:
     标记插件的触发
     """
 
-    callback_name: str
-    runtime = []
+    callbackName: str
+    runtime: list[float] = []
 
-    def __init__(self, callback_name):
-        self.callback_name = callback_name
+    def __init__(self, callbackName:str):
+        self.callbackName = callbackName
 
     def run(self):
         self.runtime.append(time.time())
@@ -55,7 +55,7 @@ class PluginLoader:
     # 单插件调用耗时记录
     plugin_call_time = {}
 
-    def __new__(cls, *args, **kwargs):
+    def __new__(cls, *args:Any, **kwargs:Any):
         if not cls._instance:
             cls._instance = super(PluginLoader, cls).__new__(cls, *args, **kwargs)
         return cls._instance
@@ -175,7 +175,7 @@ class PluginLoader:
 
             try:
                 # 获取插件名
-                plugin_name = plugin_model.plugin.name
+                plugin_name:str = plugin_model.plugin.name
                 # 获取回调函数名
                 callback_name = plugin_model.plugin.setting["callback_name"]
                 # 获取开发者设置
@@ -222,7 +222,7 @@ class PluginLoader:
                         break
 
             except Exception as e:
-                exc_type, exc_value, exc_traceback = sys.exc_info()
+                _exc_type, _exc_value, exc_traceback = sys.exc_info()
                 tb = traceback.extract_tb(exc_traceback)
 
                 Log.plugin_error(

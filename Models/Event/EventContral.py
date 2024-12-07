@@ -9,7 +9,7 @@ from DataType.PrivateMessageData import PrivateMessageData
 
 from typing import Union
 import json
-from log import Log
+from Utils.Logs import Log
 
 
 class EventAdapter:
@@ -39,7 +39,7 @@ class EventAdapter:
                     # 消息类型,private或group
                     Message_Type = data.get("message_type", None)
                     if Message_Type == "group":
-                        from group_control import GroupControl
+                        from GroupControl import GroupControl
 
                         data = GroupMessageEvent(data)
                         # 检查是否开启对应群的消息接收

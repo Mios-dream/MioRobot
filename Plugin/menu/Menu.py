@@ -1,4 +1,4 @@
-from plugin_loader import PluginLoaderControl
+from PluginLoader import PluginLoaderControl
 from Plugin.menu.TextMenu import TextMenu
 
 

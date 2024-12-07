@@ -2,7 +2,7 @@ from typing import Union
 from DataType.GroupMassageData import GroupMassageData
 import asyncio
 import json
-from log import Log
+from Utils.Logs import Log
 import websockets
 from Models.Api.BaseApi import RequestApi, ApiAdapter
 

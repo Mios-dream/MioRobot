@@ -1,7 +1,7 @@
 from plugins import Plugin
 from DataType.GroupMassageData import GroupMassageData
 from Models.Api.MessageApi import MessageApi
-from plugin_loader import PluginLoaderControl
+from PluginLoader import PluginLoaderControl
 
 setting_data = {
     "priority": 0,

@@ -2,5 +2,6 @@
   "Codegeex.Chat.LanguagePreference": "中文",
   "Codegeex.Comment.LanguagePreference": "中文",
   "Codegeex.SidebarUI.LanguagePreference": "中文",
-  "Codegeex.GenerationPreference": "automatic"
+  "Codegeex.GenerationPreference": "automatic",
+  "python.analysis.autoImportCompletions": false
 }

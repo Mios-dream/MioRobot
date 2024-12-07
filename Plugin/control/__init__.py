@@ -2,8 +2,8 @@ from plugins import Plugin
 from DataType.GroupMassageData import GroupMassageData
 from Models.Api.MessageApi import MessageApi
 from DataType.CQcode import CQcode
-from plugin_loader import PluginLoaderControl
-from log import Log
+from PluginLoader import PluginLoaderControl
+from Utils.Logs import Log
 
 setting_data = {
     # 加载优先级,数字越大优先级越高

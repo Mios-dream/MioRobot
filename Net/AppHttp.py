@@ -1,10 +1,10 @@
 from fastapi import FastAPI, HTTPException, Request
 from pydantic import BaseModel
 import uvicorn
-from log import Log
+from Utils.Logs import Log
 import json
 import threading
-from init_config import Config
+from config import Config
 from Cryptodome.Cipher import AES
 from Cryptodome.Random import get_random_bytes
 import base64
@@ -14,8 +14,8 @@ import getpass
 import platform
 import ast
 import astor
-from plugin_loader import PluginLoaderControl
-from group_control import GroupControl
+from PluginLoader import PluginLoaderControl
+from GroupControl import GroupControl
 from Models.Api.BaseApi import RequestApi, ApiAdapter
 from pynvml import *
 from Net.Receives import recv

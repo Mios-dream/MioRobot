@@ -1,17 +1,17 @@
 import websockets
 import asyncio
-from init_config import Config
-from log import Log
+from config import Config
+from Utils.Logs import Log
 from Models.Event.EventContral import EventAdapter
-from group_control import GroupControl
+from GroupControl import GroupControl
 import traceback
-from plugin_loader import PluginLoaderControl
+from PluginLoader import PluginLoaderControl
 import sys
 import time
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import uvicorn
-from init_config import Config
+from config import Config
 
 
 class OneBotReceive:
@@ -24,10 +24,9 @@ class OneBotReceive:
     plugin = None
 
     def __init__(self, config: Config):
-
         self.config = config
 
-    async def Start(self):
+    async def start(self):
         """
         启动ws连接
         """
@@ -44,7 +43,7 @@ class OneBotReceive:
             # 调用插件的初始化方法
             self.plugin.loading()
             # 调用接受方法
-            await self.Receive()
+            await self.receive()
 
         except Exception as e:
             exc_type, exc_value, exc_traceback = sys.exc_info()
@@ -56,7 +55,7 @@ class OneBotReceive:
             Log.error("websockets连接失败，请检查配置")
             Log.info("将在10秒后尝试重新连接")
             time.sleep(10)
-            await self.Start()
+            await self.start()
 
     async def httpStart(self):
         try:
@@ -84,7 +83,7 @@ class OneBotReceive:
             time.sleep(10)
             await self.httpStart()
 
-    async def Receive(self):
+    async def receive(self):
         """
         接收消息
         """

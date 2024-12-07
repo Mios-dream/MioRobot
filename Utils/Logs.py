@@ -10,7 +10,7 @@ class Log:
     包含五个方法: infor, warning, error,adapter,api_response
     """
 
-    plugin_error_list = {}
+    pluginErrorList:dict[str, list[str]] = {}
 
     @staticmethod
     def info(msg: str) -> None:
@@ -36,17 +36,17 @@ class Log:
         print(f"{colorama.Fore.RED}\n错误:{msg}")
 
     @staticmethod
-    def plugin_error(plugin_name, msg) -> None:
+    def pluginError(pluginName:str, msg:str) -> None:
         """
         输出并记录插件错误信息
         """
         # print(colorama.Fore.RED + "\n错误:", msg)
         print(f"{colorama.Fore.RED}\n错误:{msg}")
-        if plugin_name in Log.plugin_error_list:
-            Log.plugin_error_list[plugin_name].append(msg)
+        if pluginName in Log.pluginErrorList:
+            Log.pluginErrorList[pluginName].append(msg)
         else:
-            Log.plugin_error_list[plugin_name] = []
-            Log.plugin_error_list[plugin_name].append(msg)
+            Log.pluginErrorList[pluginName] = []
+            Log.pluginErrorList[pluginName].append(msg)
 
     @staticmethod
     def adapter(msg: str) -> None:
@@ -56,7 +56,7 @@ class Log:
         print("\n上报消息:", msg)
 
     @staticmethod
-    def api_response(msg: str) -> None:
+    def apiResponse(msg: str) -> None:
         """
         输出API返回的消息
         """

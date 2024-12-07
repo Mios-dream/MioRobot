@@ -10,8 +10,6 @@ class Config:
         with open("config.json") as json_file:
             json_data = json.load(json_file)
 
-        # self.__dict__ = json_data
-
         self.__set_data(json_data)
         self._set_ManageData(json_data)
 
