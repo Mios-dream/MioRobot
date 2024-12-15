@@ -7,7 +7,7 @@ from Utils.Logs import Log
 from DataType.MessageData import MessageData
 import traceback
 import time
-import websockets
+from websockets import WebSocketServerProtocol
 from Plugin import *
 
 
@@ -44,7 +44,7 @@ class PluginLoader:
     pluginNum: int = 0
 
     # 触发记录对象列表
-    triggerList = {}
+    pluginRunCount: dict[str, int] = {}
 
     # 全部插件初始化加载时间
     pluginLoadTime: float = 0
@@ -57,8 +57,7 @@ class PluginLoader:
 
     def __new__(cls, *args: Any, **kwargs: Any):
         if not cls._instance:
-            cls._instance = super(PluginLoader, cls).__new__(
-                cls, *args, **kwargs)
+            cls._instance = super(PluginLoader, cls).__new__(cls, *args, **kwargs)
         return cls._instance
 
     def __init__(self) -> None:
@@ -76,11 +75,14 @@ class PluginLoader:
         for pluginName in os.listdir(self._pluginPath):
             fullPath = os.path.join(self._pluginPath, pluginName)
             try:
-                if os.path.isdir(fullPath) and os.path.isfile(os.path.join(fullPath, '__init__.py')):
+                if os.path.isdir(fullPath) and os.path.isfile(
+                    os.path.join(fullPath, "__init__.py")
+                ):
 
                     moduleName = f"{os.path.basename(self._pluginPath)}.{pluginName}"
                     spec = importlib.util.spec_from_file_location(
-                        moduleName, os.path.join(fullPath, '__init__.py'))
+                        moduleName, os.path.join(fullPath, "__init__.py")
+                    )
                     if spec is None:
                         Log.error(f"无法找到模块 {moduleName} 的规格")
                         continue
@@ -101,25 +103,25 @@ class PluginLoader:
 
         return modules
 
-    def _callMethodInClasses(self, classes: dict[str, Any], method_name: str, *args: Any, **kwargs: Any) -> dict[str, Any]:
-        """
-        调用类中的方法
-        parameters：
-        classes: Dict[str, Any] 类字典
-        method_name: str 方法名
-        args: Any 参数列表
-        kwargs: Any 关键字参数
+    # def _callMethodInClasses(self, classes: dict[str, Any], method_name: str, *args: Any, **kwargs: Any) -> dict[str, Any]:
+    #     """
+    #     调用类中的方法
+    #     parameters：
+    #     classes: Dict[str, Any] 类字典
+    #     method_name: str 方法名
+    #     args: Any 参数列表
+    #     kwargs: Any 关键字参数
 
-        Return: dict[str, Any] 方法返回值
-        """
-        results: dict[str, Any] = {}
-        for class_name, instance in classes.items():
-            method = getattr(instance, method_name, None)
-            if callable(method):
-                results[class_name] = method(*args, **kwargs)
-            else:
-                Log.error(f"{method_name}方法在类{class_name}中不存在")
-        return results
+    #     Return: dict[str, Any] 方法返回值
+    #     """
+    #     results: dict[str, Any] = {}
+    #     for class_name, instance in classes.items():
+    #         method = getattr(instance, method_name, None)
+    #         if callable(method):
+    #             results[class_name] = method(*args, **kwargs)
+    #         else:
+    #             Log.error(f"{method_name}方法在类{class_name}中不存在")
+    #     return results
 
     def _loadClassesFromModule(self, module: ModuleType) -> Plugin | None:
         """
@@ -141,11 +143,9 @@ class PluginLoader:
                     Log.error(
                         f"实例化类 {name} 失败。\n文件路径: {tb[-1].filename} \n行号：{tb[-1].lineno} \n错误源码:{traceback.format_exc()}\n错误信息为: {e}",
                     )
-            
+
                 break
         return instance
-
-
 
     def reloadPlugins(self) -> None:
         """
@@ -171,40 +171,8 @@ class PluginLoader:
                 classes = self._loadClassesFromModule(pluginModel)
                 if classes is None:
                     continue
-                # 添加到插件对象列表
-                self.pluginObjectList[pluginName] = classes
-                # 添加到插件调用优先级列表
-                self.pluginList[pluginName] = classes.setting.priority
-                # 插件数量增加
-                self.pluginNum += 1
-            except Exception as e:
-                Log.error(f"插件 {pluginName} 初始化失败，请检查插件是否正确安装，错误信息为：{e}")
-                continue
-        
-        # 将插件按照优先级排序
-        self.pluginList = dict(
-            sorted(self.pluginList.items(),
-                key=lambda item: item[1], reverse=True)
-        )
-        # 统计插件加载时间
-        self.pluginLoadTime = time.time() - startTime
-        Log.info(f"成功重新加载了{self.pluginNum}个插件")
-        Log.info(f"重新加载插件耗时: {self.pluginLoadTime}秒")
-
-        
-
-    def load(self) -> None:
-        """
-        加载插件
-        """
-        # 统计加载插件的时间
-        startTime = time.time()
-
-        for pluginName, pluginModel in self._loadPluginsFromDir().items():
-            try:
-                # 加载模块中的类
-                classes = self._loadClassesFromModule(pluginModel)
-                if classes is None:
+                if classes.init():
+                    Log.error(f"插件 {pluginName} 配置信息初始化失败")
                     continue
                 # 添加到插件对象列表
                 self.pluginObjectList[pluginName] = classes
@@ -213,22 +181,52 @@ class PluginLoader:
                 # 插件数量增加
                 self.pluginNum += 1
             except Exception as e:
-                Log.error(f"插件 {pluginName} 初始化失败，请检查插件是否正确安装，错误信息为：{e}")
+                Log.error(
+                    f"插件 {pluginName} 初始化失败，请检查插件是否正确安装，错误信息为：{e}"
+                )
                 continue
-        
+
         # 将插件按照优先级排序
         self.pluginList = dict(
-            sorted(self.pluginList.items(),
-                   key=lambda item: item[1], reverse=True)
+            sorted(self.pluginList.items(), key=lambda item: item[1], reverse=True)
         )
         # 统计插件加载时间
         self.pluginLoadTime = time.time() - startTime
-        Log.info(f"成功加载了{self.pluginNum}个插件")
-        Log.info(f"加载插件耗时: {self.pluginLoadTime}秒")
+        Log.info(f"成功重新加载了{self.pluginNum}个插件")
+        Log.info(f"重新加载插件耗时: {self.pluginLoadTime}秒")
 
+    # def load(self) -> None:
+    #     """
+    #     加载插件
+    #     """
+    #     # 统计加载插件的时间
+    #     startTime = time.time()
 
-        
+    #     for pluginName, pluginModel in self._loadPluginsFromDir().items():
+    #         try:
+    #             # 加载模块中的类
+    #             classes = self._loadClassesFromModule(pluginModel)
+    #             if classes is None:
+    #                 continue
+    #             # 添加到插件对象列表
+    #             self.pluginObjectList[pluginName] = classes
+    #             # 添加到插件调用优先级列表
+    #             self.pluginList[pluginName] = classes.setting.priority
+    #             # 插件数量增加
+    #             self.pluginNum += 1
+    #         except Exception as e:
+    #             Log.error(f"插件 {pluginName} 初始化失败，请检查插件是否正确安装，错误信息为：{e}")
+    #             continue
 
+    #     # 将插件按照优先级排序
+    #     self.pluginList = dict(
+    #         sorted(self.pluginList.items(),
+    #                key=lambda item: item[1], reverse=True)
+    #     )
+    #     # 统计插件加载时间
+    #     self.pluginLoadTime = time.time() - startTime
+    #     Log.info(f"成功加载了{self.pluginNum}个插件")
+    #     Log.info(f"加载插件耗时: {self.pluginLoadTime}秒")
 
     async def callBack(
         self,
@@ -239,64 +237,23 @@ class PluginLoader:
         调用插件
         """
 
-        # 遍历插件回调函数对象字典
-        for pluginName,plugin in self.pluginObjectList.items():
-
+        for pluginName, pluginModel in self.pluginObjectList:
             try:
-                # 获取插件名
-                name: str = plugin.name
-                # 获取开发者设置
-                developerSetting:DeveloperSetting = plugin.developerSetting
-                # 判断是否在插件的监听事件中
-                if PostType in plugin.setting.event:
 
-                    # 记录插件运行时间
-                    if plugin_model.plugin.developer_setting["count_runtime"]:
-                        start_time = time.time()
-
+                if await self.pluginObjectList[pluginName].run():
                     # 调用插件
-                    callback = eval(f"plugin_model.{callback_name}")
-                    code = await callback(
-                        websocket, data, self.trigger_list[callback_name]
-                    )
-
-                    # 记录插件运行时间
-                    if developer_setting["count_runtime"]:
-                        # 统计插件运行时间
-                        runtime = time.time() - start_time
-                        # 将插件运行时间添加到字典中
-                        self.plugin_call_time[plugin_name] = runtime
-                        if (
-                            runtime > developer_setting["runtime_threshold"]
-                            and not developer_setting["allow_high_time_cost"]
-                        ):
-                            Log.warning(
-                                f"插件({plugin_name})运行耗时: {runtime}秒,性能较低，请检查插件!"
-                            )
-
-                    # 判断检查，是否有插件返回了非0的状态码
-                    # 0为触发，1为未触发，-1为插件错误
-                    if code == 0:
-                        # 触发并中断后续插件的调用
-                        Log.info(f"插件({plugin_name})触发成功")
-                        break
-                    elif code == -1:
-                        # 插件错误
-                        Log.pluginError(
-                            plugin_name,
-                            f"插件({plugin_name})触发失败,插件内部错误",
-                        )
-                        break
-
+                    if not (await self.pluginObjectList[pluginName].dispose()):
+                        Log.error(f"插件 {pluginName} 运行失败")
+                        continue
+                    if pluginName not in self.pluginRunCount:
+                        self.pluginRunCount[pluginName] = 0
+                    self.pluginRunCount[pluginName] += 1
+                    Log.info(f"插件{pluginName}调用成功")
             except Exception as e:
-                _, _, exc_traceback = sys.exc_info()
-                tb = traceback.extract_tb(exc_traceback)
-
-                Log.pluginError(
-                    pluginName,
-                    f"调用插件 {pluginName} 失败。\n文件路径: {tb[-1].filename} \n行号：{tb[-1].lineno} \n错误源码:{traceback.format_exc()}\n错误信息为: {e}",
+                Log.error(
+                    msg=f"插件 {pluginName} 失败，请检查插件是否正确使用，错误信息为：{e}"
                 )
-
+                continue
 
 
 # 单例初始化

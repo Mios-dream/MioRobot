@@ -1,5 +1,10 @@
 from abc import ABC, abstractmethod
 from enum import Enum
+import os
+import json
+from typing import Any
+import inspect
+from Utils.Logs import Log
 
 
 class EventType(Enum):
@@ -108,6 +113,10 @@ class Plugin(ABC):
     _setting: PluginSetting
     # 开发者设置
     _developerSetting: DeveloperSetting
+    # 配置文件路径
+    _config_filename: str
+    # 配置字典
+    _config_data: dict[str, Any]
 
     def __init__(self):
 
@@ -158,7 +167,7 @@ class Plugin(ABC):
     @property
     def setting(self) -> PluginSetting:
         return self._setting
-    
+
     @setting.setter
     def setting(self, setting: PluginSetting) -> None:
         self._setting = setting
@@ -166,21 +175,35 @@ class Plugin(ABC):
     @property
     def developerSetting(self) -> DeveloperSetting:
         return self._developerSetting
-    
+
     @developerSetting.setter
     def developerSetting(self, developerSetting: DeveloperSetting) -> None:
         self._developerSetting = developerSetting
 
-
-
     @abstractmethod
-    def init(self) -> None:
+    def init(self) -> bool:
+        self.loadConfig()
         pass
 
     @abstractmethod
-    def run(self) -> None:
+    async def run(self) -> bool:
         pass
 
     @abstractmethod
-    def dispose(self) -> None:
+    async def dispose(self) -> bool:
         pass
+
+    def loadConfig(self):
+        """获取配置文件中对应键的值"""
+        currentClass = self.__class__
+        filePath = inspect.getfile(currentClass)
+        jsonFilePath = os.path.join(os.path.dirname(filePath), "conf", "config.json")
+
+        try:
+            # 读取配置文件
+            with open(jsonFilePath, "r") as configFile:
+                self.configData = json.load(configFile)
+            return True  # 成功返回True
+        except Exception as e:
+            Log.error(f"错误信息{e}")
+            return False  # 失败返回False
