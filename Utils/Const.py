@@ -1,3 +1,5 @@
+import sys
+
 """
 通过类实现伪常量
 使用方法：
@@ -16,7 +18,5 @@ class _const:
             raise self.ConstError(data)
         self.__dict__[key] = value
 
-
-import sys
 
 sys.modules[__name__] = _const()  # type: ignore

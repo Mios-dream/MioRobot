@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, Request
 from Utils.Logs import Log
 import json
 import psutil
@@ -109,7 +109,7 @@ async def getSystemInfo():
     finally:
         try:
             nvmlShutdown()
-        except:
+        except Exception:
             pass
     username = getpass.getuser()
     u_name = platform.uname()
@@ -154,7 +154,7 @@ async def get_nvidia_gpu_memory_usage() -> dict[str, float | int]:
     finally:
         try:
             nvmlShutdown()
-        except:
+        except Exception:
             pass
     return {"memory_usage": used_memory_percentage}
 
@@ -172,7 +172,7 @@ async def get_nvidia_gpu_utilization():
         utilization = 0
         try:
             nvmlShutdown()
-        except:
+        except Exception:
             pass
     return {"utilization": utilization}
 

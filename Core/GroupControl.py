@@ -57,7 +57,7 @@ class GroupControl:
         try:
             with open("Cache/GroupList.json", "r+", encoding="utf-8") as f:
                 groupDataList = json.load(f)
-        except:
+        except Exception:
             groupDataList = []
 
         for i in range(len(groupDataList)):
@@ -102,7 +102,7 @@ class GroupControl:
         try:
             with open("Cache/GroupList.json", "r+", encoding="utf-8") as f:
                 groupDataList = json.load(f)
-        except:
+        except Exception:
             groupDataList = []
 
         groupList = rowGroupData["data"]
@@ -154,7 +154,7 @@ class GroupControl:
         try:
             with open("Cache/GroupList.json", "r+", encoding="utf-8") as f:
                 groupDataList = json.load(f)
-        except:
+        except Exception:
             groupDataList = []
 
         for i in range(len(groupDataList)):

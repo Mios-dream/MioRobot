@@ -112,26 +112,92 @@ def find_requirements_file(plugin_path):
     return None
 
 
-def install_requirements(req_file):
-    """使用uv安装requirements文件中的依赖"""
-    Log.info(f"📦 正在安装: {req_file}")
-
-    # 显示requirements文件内容
+def parse_requirements(req_file):
+    """解析requirements文件，返回包列表"""
+    packages = []
     try:
         with open(req_file, "r", encoding="utf-8") as f:
-            requirements = f.read().strip()
-            if requirements:
-                print(f"💼 依赖列表:")
-                for line in requirements.split("\n"):
-                    line = line.strip()
-                    if line and not line.startswith("#"):
-                        print(f"   - {line}")
+            for line in f:
+                line = line.strip()
+                # 跳过空行和注释
+                if line and not line.startswith("#"):
+                    packages.append(line)
     except Exception as e:
-        Log.error(f"⚠️ 无法读取requirements文件: {e}\n")
+        Log.error(f"⚠️ 无法读取requirements文件: {e}")
+    return packages
+
+
+def install_single_package(package_name, use_no_build_isolation=False):
+    """安装单个包"""
+    isolation_text = " (使用 --no-build-isolation)" if use_no_build_isolation else ""
+    Log.info(f"📦 正在安装: {package_name}{isolation_text}")
 
     try:
-        # 使用实时输出模式
-        Log.info("🔄 开始安装...")
+        cmd = ["uv", "pip", "install", package_name]
+        if use_no_build_isolation:
+            cmd.append("--no-build-isolation")
+
+        process = subprocess.Popen(
+            cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            bufsize=1,
+            universal_newlines=True,
+        )
+
+        # 实时显示输出
+        while True:
+            if process.stdout is not None:
+                output = process.stdout.readline()
+            else:
+                output = None
+
+            if output == "" and process.poll() is not None:
+                break
+            if output:
+                line = output.strip()
+                if line:
+                    print(f"   {line}")
+
+        return_code = process.poll()
+
+        if return_code == 0:
+            Log.info(f"✓ {package_name} 安装成功{isolation_text}")
+            return True
+        else:
+            Log.error(
+                f"❌ {package_name} 安装失败 (返回码: {return_code}){isolation_text}"
+            )
+            return False
+
+    except Exception as e:
+        Log.error(f"❌ 安装 {package_name} 时出错: {e}")
+        return False
+
+
+def install_requirements(req_file):
+    """使用uv安装requirements文件中的依赖，失败时逐个安装"""
+    Log.info(f"📦 正在安装: {req_file}")
+
+    # 解析requirements文件
+    packages = parse_requirements(req_file)
+
+    if not packages:
+        Log.error("❌ requirements文件为空或无效")
+        return False
+
+    # 显示要安装的包列表
+    print("💼 依赖列表:")
+    for package in packages:
+        print(f"   - {package}")
+
+    # 方法1：尝试直接安装整个requirements文件
+    Log.info("🔄 尝试批量安装...")
+
+    try:
         process = subprocess.Popen(
             ["uv", "pip", "install", "-r", str(req_file)],
             stdout=subprocess.PIPE,
@@ -162,15 +228,48 @@ def install_requirements(req_file):
         return_code = process.poll()
 
         if return_code == 0:
-            Log.info("✓ 安装成功")
+            Log.info("✓ 批量安装成功")
             return True
         else:
-            Log.error(f"❌ 安装失败 (返回码: {return_code})")
-            return False
+            Log.error(f"❌ 批量安装失败 (返回码: {return_code})")
 
     except Exception as e:
-        Log.error(f"❌ 安装出错: {e}")
+        Log.error(f"❌ 批量安装出错: {e}")
+
+    # 方法2：批量安装失败，尝试逐个安装
+    Log.info("🔄 批量安装失败，开始逐个安装...")
+
+    success_count = 0
+    failed_packages = []
+
+    for i, package in enumerate(packages, 1):
+        Log.info(f"📦 [{i}/{len(packages)}] 正在安装: {package}")
+
+        # 尝试正常安装
+        if install_single_package(package):
+            success_count += 1
+        else:
+            # 正常安装失败，尝试使用 --no-build-isolation 参数
+            Log.info(
+                f"🔄 正常安装失败，尝试使用 --no-build-isolation 参数安装 {package}"
+            )
+
+            if install_single_package(package, use_no_build_isolation=True):
+                success_count += 1
+                Log.info(f"✓ {package} 使用 --no-build-isolation 参数安装成功")
+            else:
+                failed_packages.append(package)
+                Log.error(f"❌ {package} 所有安装方式都失败")
+
+        # 在包之间添加短暂延迟，避免并发问题
+        if i < len(packages):
+            time.sleep(0.5)
+
+    if failed_packages:
         return False
+    else:
+        Log.info("✓ 所有依赖安装成功")
+        return True
 
 
 def updataPluginsDependencies():
@@ -208,18 +307,23 @@ def updataPluginsDependencies():
     success_count = 0
     failed_plugins = []
 
+    spinner = SpinnerAnimation("正在检查包中的依赖文件...")
+
     # 扫描所有插件目录
     for plugin_path in plugin_dir.iterdir():
+        spinner.start()
         if not plugin_path.is_dir():
+            spinner.stop()
             continue
 
         plugin_name = plugin_path.name
-        Log.info(f"🔍 检查插件: {plugin_name}")
 
         # 查找requirements文件
         req_file = find_requirements_file(plugin_path)
 
         if req_file:
+            spinner.stop()
+            Log.info(f"🔍 检查插件: {plugin_name}")
             total_plugins += 1
             try:
                 rel_path = req_file.relative_to(Path.cwd())
@@ -232,9 +336,7 @@ def updataPluginsDependencies():
             else:
                 failed_plugins.append(plugin_name)
         else:
-            Log.info("未找到requirements文件，不需要进行更新")
-
-        print("-" * 40)
+            spinner.stop()
 
     print("=" * 40)
     print("自检结果:")

@@ -56,17 +56,17 @@ class EventAdapter:
                         return data
                 elif postType == "notice":
                     # 通知类型,包括群成员增加,减少,禁言等
-                    Notice_Type = data.get("notice_type", None)
+                    __Notice_Type = data.get("notice_type", None)
                     data = NoticeEvent(data)
                     return data
                 elif postType == "request":
                     # 请求类型,包括加群请求,加好友请求等
-                    Request_Type = data.get("request_type", None)
+                    __Request_Type = data.get("request_type", None)
                     data = RequestEvent(data)
                     return data
                 elif postType == "meta_event":
                     # 元事件类型,包括群成员减少,群成员增加,群禁言,群解除禁言等
-                    Meta_Event_Type = data.get("meta_event_type", None)
+                    __Meta_Event_Type = data.get("meta_event_type", None)
                     data = MetaEvent(data)
                     return data
                 else:

@@ -1,5 +1,5 @@
 torch
-imageio
-realesrgan
-basicsr
 torchvision
+imageio
+basicsr
+realesrgan

@@ -1,5 +1,4 @@
-from functools import singledispatchmethod, singledispatch
-from Models.Event.BaseEvent import BaseEvent
+from functools import singledispatch
 from Models.Event.GroupMessageEvent import GroupMessageEvent
 from Models.Context.GroupMessageContext import GroupMessageContext
 

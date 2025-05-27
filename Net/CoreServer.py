@@ -5,7 +5,6 @@ from Core.PluginLoader import PluginLoader, PluginLoaderControl
 from Core.config import Config
 from Utils.WebsocketControl import WebsocketControl
 from Net.AppHttp import appHttp
-from Core.config import Config
 from Utils.Logs import Log
 import sys
 import time

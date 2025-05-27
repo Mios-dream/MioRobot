@@ -1,6 +1,5 @@
 from Core.Plugin import Plugin
 from Plugins.menu.Menu import Menu
-from DataType.CQcode import CQcode
 import re
 from Models.Context.GroupMessageContext import GroupMessageContext
 from functools import singledispatchmethod
