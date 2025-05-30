@@ -64,17 +64,24 @@ conda activate mio_robot
 #### 第一步：
 
 修改 Cache\config.json 中的配置信息
+没有的话运行一次会自动生成
 
 #### 第二步：
 
+安装 uv
+
 ```bash
-pip install -r requirements.txt
+pip install uv
+```
+
+```bash
+uv sync
 ```
 
 #### 第三步：
 
 ```bash
-python main.py
+uv run main.py
 ```
 
 ## 目录结构
@@ -119,12 +126,12 @@ main.py	主程序
 
 ## 进阶
 
-- [1.插件编写](./src/md/plugin.md)
+- [1.插件编写](./doc/md/plugin.md)
 
 ## 其他
 
-- [1.澪的介绍](./src/md/mio.md)
-- [2.插件列表](./src/md/plugin_list.md)
+- [1.澪的介绍](./doc/md/mio.md)
+- [2.插件仓库](https://github.com/Mios-dream/mios_plugins)
 
 ## 特别鸣谢
 

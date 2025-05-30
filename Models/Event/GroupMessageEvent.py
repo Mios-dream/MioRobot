@@ -36,14 +36,14 @@ class GroupMessageEvent(BaseEvent):
     # 群消息类型
     Group_Message_Type: str  # type: ignore
     # 消息ID
-    Message_ID: int | None
+    Message_ID: int
     # 原始消息，即带CQ码的消息
     RowMessage: str
     # 便捷消息读取
     # 消息图片
     Images: list[str]
     # At对象
-    At: list
+    At: list[int]
 
     def __init__(self, data: dict):
         sender = data.get("sender", {})
@@ -61,7 +61,7 @@ class GroupMessageEvent(BaseEvent):
         self.Group = data.get("group_id", 0)
         self.GroupNickname = sender.get("card")
         self.RowMessage = data.get("raw_message", "")
-        self.Message_ID = data.get("message_id", None)
+        self.Message_ID = data.get("message_id", 0)
 
         # 初始化便捷消息读取列表
         self.Message = []
@@ -86,7 +86,7 @@ class GroupMessageEvent(BaseEvent):
                 )
                 self.Images.append(url)
             elif msg_type == "at":
-                self.At.append(str(msg_data.get("qq", "")))
+                self.At.append(msg_data.get("qq", 0))
 
         # 如果没有文字消息，添加空字符串占位
         if not self.Message:

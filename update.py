@@ -105,10 +105,6 @@ def find_requirements_file(plugin_path):
         for txt_file in req_dir.glob("*.txt"):
             return txt_file
 
-    # 查找插件根目录下包含"req"的txt文件
-    for txt_file in plugin_path.glob("*req*.txt"):
-        return txt_file
-
     return None
 
 
@@ -360,6 +356,8 @@ def updataPluginsDependencies():
         print("没有找到需要安装的插件依赖")
 
     Log.info("✅ 系统更新完成！")
+
+    time.sleep(2)
 
 
 def removeUnusedDependencies():

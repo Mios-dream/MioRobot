@@ -5,6 +5,10 @@
   "Codegeex.GenerationPreference": "automatic",
   "python.analysis.autoImportCompletions": false,
   "cSpell.words": [
-    "nvml"
+    "fromarray",
+    "mimsave",
+    "ndarray",
+    "nvml",
+    "upsampler"
   ]
 }

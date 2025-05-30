@@ -2,6 +2,10 @@ from Models.MessageChain.Message import Message
 
 
 class MessageChain:
+    """
+    消息链
+    """
+
     messages: list[Message]
 
     def __init__(self) -> None:
